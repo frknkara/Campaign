@@ -287,9 +287,23 @@ namespace ServiceTests
         [Fact]
         public void Test_UpdateProductStock_Zero_Stock()
         {
+            var sampleGuid = Guid.NewGuid();
+            var _mockRepository = new Mock<IRepository<Product>>();
+            var product = new Product
+            {
+                Id = sampleGuid,
+                Code = "product",
+                Stock = 100,
+                Price = 50
+            };
+            _mockRepository.Setup(x => x.Get(It.IsAny<Guid>())).Returns(product);
+            _mockRepositoryFactory.Setup(x => x.GetRepository<Product>()).Returns(_mockRepository.Object);
             var service = new ProductService(_mockRepositoryFactory.Object, _mockSystemConfigService.Object, _mapper);
-            Exception exception = Assert.Throws<Exception>(() => service.UpdateProductStock(Guid.NewGuid(), 0));
-            Assert.Equal("Stock is invalid.", exception.Message);
+            service.UpdateProductStock(sampleGuid, 0);
+            _mockRepository.Verify(x => x.Update(
+                It.IsAny<Product>(),
+                It.IsAny<bool>()));
+            Assert.Equal(0, product.Stock);
         }
 
         [Fact]

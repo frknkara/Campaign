@@ -69,7 +69,7 @@ namespace Service
 
         public void UpdateProductStock(Guid id, int stock)
         {
-            if (stock <= 0)
+            if (stock < 0)
                 throw new Exception("Stock is invalid.");
             var product = _repository.Get(id);
             if (product == null)
