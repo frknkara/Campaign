@@ -12,11 +12,13 @@ namespace Service
     public class ProductService : IProductService
     {
         private readonly IRepository<Product> _repository;
+        private readonly ISystemConfigService _systemConfigService;
         private readonly IMapper _mapper;
 
-        public ProductService(IRepositoryFactory repositoryFactory, IMapper mapper)
+        public ProductService(IRepositoryFactory repositoryFactory, ISystemConfigService systemConfigService, IMapper mapper)
         {
             _repository = repositoryFactory.GetRepository<Product>();
+            _systemConfigService = systemConfigService;
             _mapper = mapper;
         }
 
@@ -35,6 +37,8 @@ namespace Service
                 throw new Exception($"The product with {product.Code} code has already been created.");
 
             var entity = _mapper.Map<Product>(product);
+            entity.CreationTime = _systemConfigService.GetTimeValue();
+
             _repository.Create(entity);
             return _mapper.Map<ProductDto>(entity);
         }
