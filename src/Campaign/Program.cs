@@ -33,6 +33,7 @@ namespace Campaign
                     services.AddScoped<IRepositoryFactory, GenericRepositoryFactory>();
                     services.AddTransient<ISystemConfigService, SystemConfigService>();
                     services.AddTransient<IProductService, ProductService>();
+                    services.AddTransient<IOrderService, OrderService>();
                 })
                 .Build();
 
