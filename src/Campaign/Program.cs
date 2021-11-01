@@ -1,12 +1,10 @@
 ﻿using Data;
-using Data.Entities;
 using Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.IO;
-using System.Linq;
 using Service.Contracts;
 using Service;
 using AutoMapper;
@@ -34,6 +32,7 @@ namespace Campaign
                     services.AddSingleton(mapper);
                     services.AddScoped<IRepositoryFactory, GenericRepositoryFactory>();
                     services.AddTransient<ISystemConfigService, SystemConfigService>();
+                    services.AddTransient<IProductService, ProductService>();
                 })
                 .Build();
 
