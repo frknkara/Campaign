@@ -11,12 +11,12 @@ namespace Service
     {
         private readonly IRepository<Order> _repository;
         private readonly IProductService _productService;
-        private readonly ISystemConfigService _systemConfigService;
+        private readonly ITimeManager _systemConfigService;
         private readonly IMapper _mapper;
 
         public OrderService(IRepositoryFactory repositoryFactory, 
             IProductService productService, 
-            ISystemConfigService systemConfigService, 
+            ITimeManager systemConfigService, 
             IMapper mapper)
         {
             _repository = repositoryFactory.GetRepository<Order>();

@@ -11,11 +11,11 @@ using Xunit;
 
 namespace ServiceTests
 {
-    public class SystemConfigServiceTests
+    public class TimeManagerTests
     {
         private Mock<IRepositoryFactory> _mockRepositoryFactory;
 
-        public SystemConfigServiceTests()
+        public TimeManagerTests()
         {
             _mockRepositoryFactory = new Mock<IRepositoryFactory>();
         }
@@ -34,7 +34,7 @@ namespace ServiceTests
             };
             _mockRepository.Setup(x => x.GetByCondition(It.IsAny<Expression<Func<SystemConfig, bool>>>())).Returns(list.AsQueryable());
             _mockRepositoryFactory.Setup(x => x.GetRepository<SystemConfig>()).Returns(_mockRepository.Object);
-            var service = new SystemConfigService(_mockRepositoryFactory.Object);
+            var service = new TimeManager(_mockRepositoryFactory.Object);
             Assert.Equal(10, service.GetTimeValue());
         }
 
@@ -45,7 +45,7 @@ namespace ServiceTests
             var list = new List<SystemConfig>();
             _mockRepository.Setup(x => x.GetByCondition(It.IsAny<Expression<Func<SystemConfig, bool>>>())).Returns(list.AsQueryable());
             _mockRepositoryFactory.Setup(x => x.GetRepository<SystemConfig>()).Returns(_mockRepository.Object);
-            var service = new SystemConfigService(_mockRepositoryFactory.Object);
+            var service = new TimeManager(_mockRepositoryFactory.Object);
             Exception exception = Assert.Throws<Exception>(() => service.GetTimeValue());
             Assert.Equal("System config not found.", exception.Message);
         }
@@ -64,7 +64,7 @@ namespace ServiceTests
             };
             _mockRepository.Setup(x => x.GetByCondition(It.IsAny<Expression<Func<SystemConfig, bool>>>())).Returns(list.AsQueryable());
             _mockRepositoryFactory.Setup(x => x.GetRepository<SystemConfig>()).Returns(_mockRepository.Object);
-            var service = new SystemConfigService(_mockRepositoryFactory.Object);
+            var service = new TimeManager(_mockRepositoryFactory.Object);
             service.IncreaseTimeValue();
             _mockRepository.Verify(x => x.Update(
                 It.IsAny<SystemConfig>(),
@@ -79,7 +79,7 @@ namespace ServiceTests
             var list = new List<SystemConfig>();
             _mockRepository.Setup(x => x.GetByCondition(It.IsAny<Expression<Func<SystemConfig, bool>>>())).Returns(list.AsQueryable());
             _mockRepositoryFactory.Setup(x => x.GetRepository<SystemConfig>()).Returns(_mockRepository.Object);
-            var service = new SystemConfigService(_mockRepositoryFactory.Object);
+            var service = new TimeManager(_mockRepositoryFactory.Object);
             Exception exception = Assert.Throws<Exception>(() => service.IncreaseTimeValue());
             Assert.Equal("System config not found.", exception.Message);
         }

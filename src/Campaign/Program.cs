@@ -31,7 +31,7 @@ namespace Campaign
                     services.AddDbContext<CampaignDbContext>(options => options.UseNpgsql(connStr));
                     services.AddSingleton(mapper);
                     services.AddScoped<IRepositoryFactory, GenericRepositoryFactory>();
-                    services.AddTransient<ISystemConfigService, SystemConfigService>();
+                    services.AddTransient<ITimeManager, TimeManager>();
                     services.AddTransient<IProductService, ProductService>();
                     services.AddTransient<IOrderService, OrderService>();
                 })
@@ -40,7 +40,7 @@ namespace Campaign
             var dbContext = host.Services.CreateScope().ServiceProvider.GetRequiredService<CampaignDbContext>();
             DataSeeding.Seed(dbContext);
 
-            var service = host.Services.GetRequiredService<ISystemConfigService>();
+            var service = host.Services.GetRequiredService<ITimeManager>();
             //var list = repo.GetRepository<SystemConfig>().GetAll().ToList();
             service.IncreaseTimeValue();
             var time = service.GetTimeValue();

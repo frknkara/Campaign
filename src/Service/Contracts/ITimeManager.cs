@@ -1,6 +1,6 @@
 ﻿namespace Service.Contracts
 {
-    public interface ISystemConfigService
+    public interface ITimeManager
     {
         int GetTimeValue();
         void IncreaseTimeValue();

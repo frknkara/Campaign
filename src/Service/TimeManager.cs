@@ -7,11 +7,11 @@ using System.Linq;
 
 namespace Service
 {
-    public class SystemConfigService : ISystemConfigService
+    public class TimeManager : ITimeManager
     {
         private readonly IRepository<SystemConfig> _repository;
 
-        public SystemConfigService(IRepositoryFactory repositoryFactory)
+        public TimeManager(IRepositoryFactory repositoryFactory)
         {
             _repository = repositoryFactory.GetRepository<SystemConfig>();
         }

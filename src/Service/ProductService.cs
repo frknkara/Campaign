@@ -12,10 +12,10 @@ namespace Service
     public class ProductService : IProductService
     {
         private readonly IRepository<Product> _repository;
-        private readonly ISystemConfigService _systemConfigService;
+        private readonly ITimeManager _systemConfigService;
         private readonly IMapper _mapper;
 
-        public ProductService(IRepositoryFactory repositoryFactory, ISystemConfigService systemConfigService, IMapper mapper)
+        public ProductService(IRepositoryFactory repositoryFactory, ITimeManager systemConfigService, IMapper mapper)
         {
             _repository = repositoryFactory.GetRepository<Product>();
             _systemConfigService = systemConfigService;

@@ -19,7 +19,7 @@ namespace ServiceTests
     {
         private Mock<IRepositoryFactory> _mockRepositoryFactory;
         private Mock<IProductService> _mockProductService;
-        private Mock<ISystemConfigService> _mockSystemConfigService;
+        private Mock<ITimeManager> _mockSystemConfigService;
         private IMapper _mapper;
         private Guid sampleProductId;
         private ProductDto sampleProduct;
@@ -40,7 +40,7 @@ namespace ServiceTests
             };
             _mockProductService.Setup(x => x.GetProductInfo(It.IsAny<string>())).Returns(sampleProduct);
 
-            _mockSystemConfigService = new Mock<ISystemConfigService>();
+            _mockSystemConfigService = new Mock<ITimeManager>();
             _mockSystemConfigService.Setup(x => x.GetTimeValue()).Returns(0);
 
             var mapperConfiguration = new MapperConfiguration(conf => conf.AddProfile(new MappingProfiles()));

@@ -17,14 +17,14 @@ namespace ServiceTests
     public class ProductServiceTests
     {
         private Mock<IRepositoryFactory> _mockRepositoryFactory;
-        private Mock<ISystemConfigService> _mockSystemConfigService;
+        private Mock<ITimeManager> _mockSystemConfigService;
         private IMapper _mapper;
 
         public ProductServiceTests()
         {
             _mockRepositoryFactory = new Mock<IRepositoryFactory>();
 
-            _mockSystemConfigService = new Mock<ISystemConfigService>();
+            _mockSystemConfigService = new Mock<ITimeManager>();
             _mockSystemConfigService.Setup(x => x.GetTimeValue()).Returns(0);
 
             var mapperConfiguration = new MapperConfiguration(conf => conf.AddProfile(new MappingProfiles()));
