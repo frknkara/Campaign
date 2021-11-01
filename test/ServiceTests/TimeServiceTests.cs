@@ -18,8 +18,8 @@ namespace ServiceTests
         public void Test_IncreaseTime()
         {
             var service = new TimeService(_mockTimeManager.Object);
-            service.IncreaseTime();
-            _mockTimeManager.Verify(x => x.IncreaseTimeValue());
+            service.IncreaseTime(1);
+            _mockTimeManager.Verify(x => x.IncreaseTimeValue(1));
         }
     }
 }

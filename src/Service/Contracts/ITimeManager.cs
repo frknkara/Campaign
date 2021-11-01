@@ -3,6 +3,6 @@
     public interface ITimeManager
     {
         int GetTimeValue();
-        void IncreaseTimeValue();
+        void IncreaseTimeValue(int hour);
     }
 }

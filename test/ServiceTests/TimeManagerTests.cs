@@ -65,11 +65,27 @@ namespace ServiceTests
             _mockRepository.Setup(x => x.GetByCondition(It.IsAny<Expression<Func<SystemConfig, bool>>>())).Returns(list.AsQueryable());
             _mockRepositoryFactory.Setup(x => x.GetRepository<SystemConfig>()).Returns(_mockRepository.Object);
             var service = new TimeManager(_mockRepositoryFactory.Object);
-            service.IncreaseTimeValue();
+            service.IncreaseTimeValue(1);
             _mockRepository.Verify(x => x.Update(
                 It.IsAny<SystemConfig>(),
                 It.IsAny<bool>()));
             Assert.Equal(2, service.GetTimeValue());
+        }
+
+        [Fact]
+        public void Test_IncreaseTimeValue_Zero_Hour()
+        {
+            var service = new TimeManager(_mockRepositoryFactory.Object);
+            Exception exception = Assert.Throws<Exception>(() => service.IncreaseTimeValue(0));
+            Assert.Equal("Hour increment value is not valid.", exception.Message);
+        }
+
+        [Fact]
+        public void Test_IncreaseTimeValue_Negative_Hour()
+        {
+            var service = new TimeManager(_mockRepositoryFactory.Object);
+            Exception exception = Assert.Throws<Exception>(() => service.IncreaseTimeValue(-1));
+            Assert.Equal("Hour increment value is not valid.", exception.Message);
         }
 
         [Fact]
@@ -80,7 +96,7 @@ namespace ServiceTests
             _mockRepository.Setup(x => x.GetByCondition(It.IsAny<Expression<Func<SystemConfig, bool>>>())).Returns(list.AsQueryable());
             _mockRepositoryFactory.Setup(x => x.GetRepository<SystemConfig>()).Returns(_mockRepository.Object);
             var service = new TimeManager(_mockRepositoryFactory.Object);
-            Exception exception = Assert.Throws<Exception>(() => service.IncreaseTimeValue());
+            Exception exception = Assert.Throws<Exception>(() => service.IncreaseTimeValue(1));
             Assert.Equal("System config not found.", exception.Message);
         }
     }

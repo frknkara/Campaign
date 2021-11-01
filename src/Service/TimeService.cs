@@ -11,9 +11,10 @@ namespace Service
             _timeManager = timeManager;
         }
 
-        public void IncreaseTime()
+        public void IncreaseTime(int hour)
         {
-            _timeManager.IncreaseTimeValue();
+            _timeManager.IncreaseTimeValue(hour);
+            //TODO: inject campaign service, product service. get products in campaign and set prices by campaign discount
         }
     }
 }

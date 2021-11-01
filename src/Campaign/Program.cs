@@ -8,6 +8,7 @@ using System.IO;
 using Service.Contracts;
 using Service;
 using AutoMapper;
+using System;
 
 namespace Campaign
 {
@@ -41,9 +42,8 @@ namespace Campaign
             DataSeeding.Seed(dbContext);
 
             var service = host.Services.GetRequiredService<ITimeManager>();
-            //var list = repo.GetRepository<SystemConfig>().GetAll().ToList();
-            service.IncreaseTimeValue();
             var time = service.GetTimeValue();
+            Console.WriteLine($"Time: {time}");
         }
     }
 }
