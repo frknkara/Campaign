@@ -170,11 +170,12 @@ namespace ServiceTests
             _mockRepository.Setup(x => x.GetByCondition(It.IsAny<Expression<Func<Product, bool>>>())).Returns(list.AsQueryable());
             _mockRepositoryFactory.Setup(x => x.GetRepository<Product>()).Returns(_mockRepository.Object);
             var service = new ProductService(_mockRepositoryFactory.Object, _mockSystemConfigService.Object, _mapper);
-            service.CreateProduct(createProduct);
+            var productResult = service.CreateProduct(createProduct);
             _mockSystemConfigService.Verify(x => x.GetTimeValue());
             _mockRepository.Verify(x => x.Create(
                 It.IsAny<Product>(),
                 It.IsAny<bool>()));
+            Assert.Equal(createProduct.Code, productResult.Code);
         }
 
         [Fact]
