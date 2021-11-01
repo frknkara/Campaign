@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using Service.Contracts;
 using Service;
+using AutoMapper;
 
 namespace Campaign
 {
@@ -23,10 +24,14 @@ namespace Campaign
 
             var connStr = config.GetConnectionString("CampaignDbConnection");
 
+            var mapperConfiguration = new MapperConfiguration(conf => conf.AddProfile(new MappingProfiles()));
+            var mapper = mapperConfiguration.CreateMapper();
+
             var host = Host.CreateDefaultBuilder(args)
                 .ConfigureServices(services =>
                 {
                     services.AddDbContext<CampaignDbContext>(options => options.UseNpgsql(connStr));
+                    services.AddSingleton(mapper);
                     services.AddScoped<IRepositoryFactory, GenericRepositoryFactory>();
                     services.AddTransient<ISystemConfigService, SystemConfigService>();
                 })
