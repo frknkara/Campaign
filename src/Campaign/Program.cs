@@ -36,6 +36,7 @@ namespace Campaign
                     services.AddTransient<ITimeManager, TimeManager>();
                     services.AddTransient<IProductManager, ProductManager>();
                     services.AddTransient<IOrderManager, OrderManager>();
+                    services.AddTransient<ICampaignManager, CampaignManager>();
                 })
                 .Build();
 

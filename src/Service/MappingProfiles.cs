@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Data.Entities;
+using Model.Campaign;
 using Model.Order;
 using Model.Product;
 
@@ -14,6 +15,9 @@ namespace Service
 
             CreateMap<Order, OrderDto>();
             CreateMap<CreateOrderDto, Order>();
+
+            CreateMap<Campaign, CampaignDto>();
+            CreateMap<CreateCampaignDto, Campaign>();
         }
     }
 }

@@ -33,6 +33,10 @@ namespace Data
             modelBuilder.Entity<SystemConfig>()
                 .HasIndex(s => s.Code)
                 .IsUnique();
+
+            modelBuilder.Entity<Campaign>()
+                .HasIndex(s => s.Name)
+                .IsUnique();
         }
     }
 }
