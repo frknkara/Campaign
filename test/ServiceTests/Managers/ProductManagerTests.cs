@@ -5,7 +5,6 @@ using Model.Product;
 using Model.Shared;
 using Moq;
 using Service;
-using Service.Contracts;
 using Service.Managers;
 using System;
 using System.Collections.Generic;
