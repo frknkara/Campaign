@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Model.Order
+﻿namespace Model.Order
 {
     public class CreateOrderDto
     {

@@ -15,7 +15,7 @@ namespace ServiceTests
     public class OrderManagerTests
     {
         private Mock<IRepositoryFactory> _mockRepositoryFactory;
-        private Mock<IProductManager> _mockProductService;
+        private Mock<IProductManager> _mockProductManager;
         private Mock<ITimeManager> _mockTimeManager;
         private IMapper _mapper;
         private Guid sampleProductId;
@@ -25,7 +25,7 @@ namespace ServiceTests
         {
             _mockRepositoryFactory = new Mock<IRepositoryFactory>();
 
-            _mockProductService = new Mock<IProductManager>();
+            _mockProductManager = new Mock<IProductManager>();
             sampleProductId = Guid.NewGuid();
             sampleProduct = new ProductDto
             {
@@ -35,7 +35,7 @@ namespace ServiceTests
                 Stock = 50,
                 CreationTime = 0
             };
-            _mockProductService.Setup(x => x.GetProductInfo(It.IsAny<string>())).Returns(sampleProduct);
+            _mockProductManager.Setup(x => x.GetProductInfo(It.IsAny<string>())).Returns(sampleProduct);
 
             _mockTimeManager = new Mock<ITimeManager>();
             _mockTimeManager.Setup(x => x.GetTimeValue()).Returns(0);
@@ -52,8 +52,8 @@ namespace ServiceTests
                 ProductCode = "product",
                 Quantity = 0
             };
-            var service = new OrderManager(_mockRepositoryFactory.Object, _mockProductService.Object, _mockTimeManager.Object, _mapper);
-            Exception exception = Assert.Throws<Exception>(() => service.CreateOrder(createOrder));
+            var manager = new OrderManager(_mockRepositoryFactory.Object, _mockProductManager.Object, _mockTimeManager.Object, _mapper);
+            Exception exception = Assert.Throws<Exception>(() => manager.CreateOrder(createOrder));
             Assert.Equal("Quantity is invalid.", exception.Message);
         }
 
@@ -65,8 +65,8 @@ namespace ServiceTests
                 ProductCode = "product",
                 Quantity = -1
             };
-            var service = new OrderManager(_mockRepositoryFactory.Object, _mockProductService.Object, _mockTimeManager.Object, _mapper);
-            Exception exception = Assert.Throws<Exception>(() => service.CreateOrder(createOrder));
+            var manager = new OrderManager(_mockRepositoryFactory.Object, _mockProductManager.Object, _mockTimeManager.Object, _mapper);
+            Exception exception = Assert.Throws<Exception>(() => manager.CreateOrder(createOrder));
             Assert.Equal("Quantity is invalid.", exception.Message);
         }
 
@@ -78,9 +78,9 @@ namespace ServiceTests
                 ProductCode = "product",
                 Quantity = sampleProduct.Stock + 1
             };
-            var service = new OrderManager(_mockRepositoryFactory.Object, _mockProductService.Object, _mockTimeManager.Object, _mapper);
-            Exception exception = Assert.Throws<Exception>(() => service.CreateOrder(createOrder));
-            _mockProductService.Verify(x => x.GetProductInfo(sampleProduct.Code));
+            var manager = new OrderManager(_mockRepositoryFactory.Object, _mockProductManager.Object, _mockTimeManager.Object, _mapper);
+            Exception exception = Assert.Throws<Exception>(() => manager.CreateOrder(createOrder));
+            _mockProductManager.Verify(x => x.GetProductInfo(sampleProduct.Code));
             Assert.Equal("There is not enough stock.", exception.Message);
         }
 
@@ -94,15 +94,15 @@ namespace ServiceTests
             };
             var _mockRepository = new Mock<IRepository<Order>>();
             _mockRepositoryFactory.Setup(x => x.GetRepository<Order>()).Returns(_mockRepository.Object);
-            var service = new OrderManager(_mockRepositoryFactory.Object, _mockProductService.Object, _mockTimeManager.Object, _mapper);
-            var orderResult = service.CreateOrder(createOrder);
-            _mockProductService.Verify(x => x.GetProductInfo(sampleProduct.Code));
+            var manager = new OrderManager(_mockRepositoryFactory.Object, _mockProductManager.Object, _mockTimeManager.Object, _mapper);
+            var orderResult = manager.CreateOrder(createOrder);
+            _mockProductManager.Verify(x => x.GetProductInfo(sampleProduct.Code));
             _mockTimeManager.Verify(x => x.GetTimeValue());
             
             _mockRepository.Verify(x => x.Create(
                 It.IsAny<Order>(),
                 It.IsAny<bool>()));
-            _mockProductService.Verify(x => x.UpdateProductStock(sampleProductId, sampleProduct.Stock - createOrder.Quantity));
+            _mockProductManager.Verify(x => x.UpdateProductStock(sampleProductId, sampleProduct.Stock - createOrder.Quantity));
             Assert.Equal(sampleProductId, orderResult.ProductId);
             Assert.Equal(createOrder.Quantity, orderResult.Quantity);
         }

@@ -10,17 +10,17 @@ namespace Service.Managers
     public class OrderManager : IOrderManager
     {
         private readonly IRepository<Order> _repository;
-        private readonly IProductManager _productService;
+        private readonly IProductManager _productManager;
         private readonly ITimeManager _timeManager;
         private readonly IMapper _mapper;
 
         public OrderManager(IRepositoryFactory repositoryFactory, 
-            IProductManager productService, 
+            IProductManager productManager, 
             ITimeManager timeManager, 
             IMapper mapper)
         {
             _repository = repositoryFactory.GetRepository<Order>();
-            _productService = productService;
+            _productManager = productManager;
             _timeManager = timeManager;
             _mapper = mapper;
         }
@@ -30,7 +30,7 @@ namespace Service.Managers
             if (order.Quantity <= 0)
                 throw new Exception("Quantity is invalid.");
 
-            var product = _productService.GetProductInfo(order.ProductCode);
+            var product = _productManager.GetProductInfo(order.ProductCode);
             var newStock = product.Stock - order.Quantity;
             if (newStock < 0)
                 throw new Exception("There is not enough stock.");
@@ -41,7 +41,7 @@ namespace Service.Managers
 
             _repository.Create(entity);
 
-            _productService.UpdateProductStock(product.Id, newStock);
+            _productManager.UpdateProductStock(product.Id, newStock);
 
             return _mapper.Map<OrderDto>(entity);
         }

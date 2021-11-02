@@ -34,8 +34,8 @@ namespace ServiceTests
             };
             _mockRepository.Setup(x => x.GetByCondition(It.IsAny<Expression<Func<SystemConfig, bool>>>())).Returns(list.AsQueryable());
             _mockRepositoryFactory.Setup(x => x.GetRepository<SystemConfig>()).Returns(_mockRepository.Object);
-            var service = new TimeManager(_mockRepositoryFactory.Object);
-            Assert.Equal(10, service.GetTimeValue());
+            var manager = new TimeManager(_mockRepositoryFactory.Object);
+            Assert.Equal(10, manager.GetTimeValue());
         }
 
         [Fact]
@@ -45,8 +45,8 @@ namespace ServiceTests
             var list = new List<SystemConfig>();
             _mockRepository.Setup(x => x.GetByCondition(It.IsAny<Expression<Func<SystemConfig, bool>>>())).Returns(list.AsQueryable());
             _mockRepositoryFactory.Setup(x => x.GetRepository<SystemConfig>()).Returns(_mockRepository.Object);
-            var service = new TimeManager(_mockRepositoryFactory.Object);
-            Exception exception = Assert.Throws<Exception>(() => service.GetTimeValue());
+            var manager = new TimeManager(_mockRepositoryFactory.Object);
+            Exception exception = Assert.Throws<Exception>(() => manager.GetTimeValue());
             Assert.Equal("System config not found.", exception.Message);
         }
 
@@ -64,27 +64,27 @@ namespace ServiceTests
             };
             _mockRepository.Setup(x => x.GetByCondition(It.IsAny<Expression<Func<SystemConfig, bool>>>())).Returns(list.AsQueryable());
             _mockRepositoryFactory.Setup(x => x.GetRepository<SystemConfig>()).Returns(_mockRepository.Object);
-            var service = new TimeManager(_mockRepositoryFactory.Object);
-            service.IncreaseTimeValue(1);
+            var manager = new TimeManager(_mockRepositoryFactory.Object);
+            manager.IncreaseTimeValue(1);
             _mockRepository.Verify(x => x.Update(
                 It.IsAny<SystemConfig>(),
                 It.IsAny<bool>()));
-            Assert.Equal(2, service.GetTimeValue());
+            Assert.Equal(2, manager.GetTimeValue());
         }
 
         [Fact]
         public void Test_IncreaseTimeValue_Zero_Hour()
         {
-            var service = new TimeManager(_mockRepositoryFactory.Object);
-            Exception exception = Assert.Throws<Exception>(() => service.IncreaseTimeValue(0));
+            var manager = new TimeManager(_mockRepositoryFactory.Object);
+            Exception exception = Assert.Throws<Exception>(() => manager.IncreaseTimeValue(0));
             Assert.Equal("Hour increment value is not valid.", exception.Message);
         }
 
         [Fact]
         public void Test_IncreaseTimeValue_Negative_Hour()
         {
-            var service = new TimeManager(_mockRepositoryFactory.Object);
-            Exception exception = Assert.Throws<Exception>(() => service.IncreaseTimeValue(-1));
+            var manager = new TimeManager(_mockRepositoryFactory.Object);
+            Exception exception = Assert.Throws<Exception>(() => manager.IncreaseTimeValue(-1));
             Assert.Equal("Hour increment value is not valid.", exception.Message);
         }
 
@@ -95,8 +95,8 @@ namespace ServiceTests
             var list = new List<SystemConfig>();
             _mockRepository.Setup(x => x.GetByCondition(It.IsAny<Expression<Func<SystemConfig, bool>>>())).Returns(list.AsQueryable());
             _mockRepositoryFactory.Setup(x => x.GetRepository<SystemConfig>()).Returns(_mockRepository.Object);
-            var service = new TimeManager(_mockRepositoryFactory.Object);
-            Exception exception = Assert.Throws<Exception>(() => service.IncreaseTimeValue(1));
+            var manager = new TimeManager(_mockRepositoryFactory.Object);
+            Exception exception = Assert.Throws<Exception>(() => manager.IncreaseTimeValue(1));
             Assert.Equal("System config not found.", exception.Message);
         }
     }
