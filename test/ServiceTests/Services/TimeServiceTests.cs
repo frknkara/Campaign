@@ -1,6 +1,6 @@
 using Moq;
-using Service;
 using Service.Contracts;
+using Service.Services;
 using Xunit;
 
 namespace ServiceTests

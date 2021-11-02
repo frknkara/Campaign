@@ -3,7 +3,7 @@ using System;
 
 namespace Service.Contracts
 {
-    public interface IProductService
+    public interface IProductManager
     {
         ProductDto GetProductInfo(string productCode);
         ProductDto CreateProduct(CreateProductDto product);

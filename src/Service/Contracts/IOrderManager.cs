@@ -2,7 +2,7 @@
 
 namespace Service.Contracts
 {
-    public interface IOrderService
+    public interface IOrderManager
     {
         OrderDto CreateOrder(CreateOrderDto order);
     }

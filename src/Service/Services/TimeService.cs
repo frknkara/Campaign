@@ -1,6 +1,6 @@
 ﻿using Service.Contracts;
 
-namespace Service
+namespace Service.Services
 {
     public class TimeService : ITimeService
     {

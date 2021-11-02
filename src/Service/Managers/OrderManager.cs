@@ -5,23 +5,23 @@ using Model.Order;
 using Service.Contracts;
 using System;
 
-namespace Service
+namespace Service.Managers
 {
-    public class OrderService : IOrderService
+    public class OrderManager : IOrderManager
     {
         private readonly IRepository<Order> _repository;
-        private readonly IProductService _productService;
-        private readonly ITimeManager _systemConfigService;
+        private readonly IProductManager _productService;
+        private readonly ITimeManager _timeManager;
         private readonly IMapper _mapper;
 
-        public OrderService(IRepositoryFactory repositoryFactory, 
-            IProductService productService, 
-            ITimeManager systemConfigService, 
+        public OrderManager(IRepositoryFactory repositoryFactory, 
+            IProductManager productService, 
+            ITimeManager timeManager, 
             IMapper mapper)
         {
             _repository = repositoryFactory.GetRepository<Order>();
             _productService = productService;
-            _systemConfigService = systemConfigService;
+            _timeManager = timeManager;
             _mapper = mapper;
         }
 
@@ -37,7 +37,7 @@ namespace Service
 
             var entity = _mapper.Map<Order>(order);
             entity.ProductId = product.Id;
-            entity.CreationTime = _systemConfigService.GetTimeValue();
+            entity.CreationTime = _timeManager.GetTimeValue();
 
             _repository.Create(entity);
 

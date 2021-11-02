@@ -5,8 +5,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.IO;
-using Service.Contracts;
 using Service;
+using Service.Contracts;
+using Service.Managers;
 using AutoMapper;
 using System;
 
@@ -33,8 +34,8 @@ namespace Campaign
                     services.AddSingleton(mapper);
                     services.AddScoped<IRepositoryFactory, GenericRepositoryFactory>();
                     services.AddTransient<ITimeManager, TimeManager>();
-                    services.AddTransient<IProductService, ProductService>();
-                    services.AddTransient<IOrderService, OrderService>();
+                    services.AddTransient<IProductManager, ProductManager>();
+                    services.AddTransient<IOrderManager, OrderManager>();
                 })
                 .Build();
 

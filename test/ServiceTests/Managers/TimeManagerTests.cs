@@ -2,7 +2,7 @@ using Data.Entities;
 using Data.Repositories;
 using Model.Shared;
 using Moq;
-using Service;
+using Service.Managers;
 using System;
 using System.Collections.Generic;
 using System.Linq;

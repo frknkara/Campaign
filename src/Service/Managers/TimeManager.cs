@@ -5,7 +5,7 @@ using Service.Contracts;
 using System;
 using System.Linq;
 
-namespace Service
+namespace Service.Managers
 {
     public class TimeManager : ITimeManager
     {
