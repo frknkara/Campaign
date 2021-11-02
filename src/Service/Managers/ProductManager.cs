@@ -12,13 +12,11 @@ namespace Service.Managers
     public class ProductManager : IProductManager
     {
         private readonly IRepository<Product> _repository;
-        private readonly ITimeManager _timeManager;
         private readonly IMapper _mapper;
 
-        public ProductManager(IRepositoryFactory repositoryFactory, ITimeManager timeManager, IMapper mapper)
+        public ProductManager(IRepositoryFactory repositoryFactory, IMapper mapper)
         {
             _repository = repositoryFactory.GetRepository<Product>();
-            _timeManager = timeManager;
             _mapper = mapper;
         }
 
@@ -37,7 +35,6 @@ namespace Service.Managers
                 throw new Exception($"The product with {product.Code} code has already been created.");
 
             var entity = _mapper.Map<Product>(product);
-            entity.CreationTime = _timeManager.GetTimeValue();
 
             _repository.Create(entity);
             return _mapper.Map<ProductDto>(entity);

@@ -18,15 +18,11 @@ namespace ServiceTests
     public class ProductManagerTests
     {
         private Mock<IRepositoryFactory> _mockRepositoryFactory;
-        private Mock<ITimeManager> _mockTimeManager;
         private IMapper _mapper;
 
         public ProductManagerTests()
         {
             _mockRepositoryFactory = new Mock<IRepositoryFactory>();
-
-            _mockTimeManager = new Mock<ITimeManager>();
-            _mockTimeManager.Setup(x => x.GetTimeValue()).Returns(0);
 
             var mapperConfiguration = new MapperConfiguration(conf => conf.AddProfile(new MappingProfiles()));
             _mapper = mapperConfiguration.CreateMapper();
@@ -41,7 +37,7 @@ namespace ServiceTests
                 Stock = 100,
                 Price = 20
             };
-            var manager = new ProductManager(_mockRepositoryFactory.Object, _mockTimeManager.Object, _mapper);
+            var manager = new ProductManager(_mockRepositoryFactory.Object, _mapper);
             Exception exception = Assert.Throws<Exception>(() => manager.CreateProduct(createProduct));
             Assert.Equal("Product code is not valid.", exception.Message);
         }
@@ -55,7 +51,7 @@ namespace ServiceTests
                 Stock = 100,
                 Price = 20
             };
-            var manager = new ProductManager(_mockRepositoryFactory.Object, _mockTimeManager.Object, _mapper);
+            var manager = new ProductManager(_mockRepositoryFactory.Object, _mapper);
             Exception exception = Assert.Throws<Exception>(() => manager.CreateProduct(createProduct));
             Assert.Equal("Product code is not valid.", exception.Message);
         }
@@ -70,7 +66,7 @@ namespace ServiceTests
                 Stock = 100,
                 Price = 20
             };
-            var manager = new ProductManager(_mockRepositoryFactory.Object, _mockTimeManager.Object, _mapper);
+            var manager = new ProductManager(_mockRepositoryFactory.Object, _mapper);
             Exception exception = Assert.Throws<Exception>(() => manager.CreateProduct(createProduct));
             Assert.Equal($"Max length of product code should be {Constraints.CODE_COLUMN_MAX_LENGTH}.", exception.Message);
         }
@@ -84,7 +80,7 @@ namespace ServiceTests
                 Stock = 100,
                 Price = 0
             };
-            var manager = new ProductManager(_mockRepositoryFactory.Object, _mockTimeManager.Object, _mapper);
+            var manager = new ProductManager(_mockRepositoryFactory.Object, _mapper);
             Exception exception = Assert.Throws<Exception>(() => manager.CreateProduct(createProduct));
             Assert.Equal("Price is invalid.", exception.Message);
         }
@@ -98,7 +94,7 @@ namespace ServiceTests
                 Stock = 100,
                 Price = -1
             };
-            var manager = new ProductManager(_mockRepositoryFactory.Object, _mockTimeManager.Object, _mapper);
+            var manager = new ProductManager(_mockRepositoryFactory.Object, _mapper);
             Exception exception = Assert.Throws<Exception>(() => manager.CreateProduct(createProduct));
             Assert.Equal("Price is invalid.", exception.Message);
         }
@@ -112,7 +108,7 @@ namespace ServiceTests
                 Stock = 0,
                 Price = 20
             };
-            var manager = new ProductManager(_mockRepositoryFactory.Object, _mockTimeManager.Object, _mapper);
+            var manager = new ProductManager(_mockRepositoryFactory.Object, _mapper);
             Exception exception = Assert.Throws<Exception>(() => manager.CreateProduct(createProduct));
             Assert.Equal("Stock is invalid.", exception.Message);
         }
@@ -126,7 +122,7 @@ namespace ServiceTests
                 Stock = -1,
                 Price = 20
             };
-            var manager = new ProductManager(_mockRepositoryFactory.Object, _mockTimeManager.Object, _mapper);
+            var manager = new ProductManager(_mockRepositoryFactory.Object, _mapper);
             Exception exception = Assert.Throws<Exception>(() => manager.CreateProduct(createProduct));
             Assert.Equal("Stock is invalid.", exception.Message);
         }
@@ -152,7 +148,7 @@ namespace ServiceTests
             };
             _mockRepository.Setup(x => x.GetByCondition(It.IsAny<Expression<Func<Product, bool>>>())).Returns(list.AsQueryable());
             _mockRepositoryFactory.Setup(x => x.GetRepository<Product>()).Returns(_mockRepository.Object);
-            var manager = new ProductManager(_mockRepositoryFactory.Object, _mockTimeManager.Object, _mapper);
+            var manager = new ProductManager(_mockRepositoryFactory.Object, _mapper);
             Exception exception = Assert.Throws<Exception>(() => manager.CreateProduct(createProduct));
             Assert.Equal($"The product with {createProduct.Code} code has already been created.", exception.Message);
         }
@@ -170,9 +166,8 @@ namespace ServiceTests
             var list = new List<Product>();
             _mockRepository.Setup(x => x.GetByCondition(It.IsAny<Expression<Func<Product, bool>>>())).Returns(list.AsQueryable());
             _mockRepositoryFactory.Setup(x => x.GetRepository<Product>()).Returns(_mockRepository.Object);
-            var manager = new ProductManager(_mockRepositoryFactory.Object, _mockTimeManager.Object, _mapper);
+            var manager = new ProductManager(_mockRepositoryFactory.Object, _mapper);
             var productResult = manager.CreateProduct(createProduct);
-            _mockTimeManager.Verify(x => x.GetTimeValue());
             _mockRepository.Verify(x => x.Create(
                 It.IsAny<Product>(),
                 It.IsAny<bool>()));
@@ -182,7 +177,7 @@ namespace ServiceTests
         [Fact]
         public void Test_GetProductInfo_Null_Code()
         {
-            var manager = new ProductManager(_mockRepositoryFactory.Object, _mockTimeManager.Object, _mapper);
+            var manager = new ProductManager(_mockRepositoryFactory.Object, _mapper);
             Exception exception = Assert.Throws<Exception>(() => manager.GetProductInfo(null));
             Assert.Equal("Product code is not valid.", exception.Message);
         }
@@ -190,7 +185,7 @@ namespace ServiceTests
         [Fact]
         public void Test_GetProductInfo_Empty_String_Code()
         {
-            var manager = new ProductManager(_mockRepositoryFactory.Object, _mockTimeManager.Object, _mapper);
+            var manager = new ProductManager(_mockRepositoryFactory.Object, _mapper);
             Exception exception = Assert.Throws<Exception>(() => manager.GetProductInfo(""));
             Assert.Equal("Product code is not valid.", exception.Message);
         }
@@ -199,7 +194,7 @@ namespace ServiceTests
         public void Test_GetProductInfo_Exceeds_Max_Length_Code()
         {
             var invalidLengthString = new string(Enumerable.Repeat("ABCDEF", Constraints.CODE_COLUMN_MAX_LENGTH + 1).Select(s => s[new Random().Next(s.Length)]).ToArray());
-            var manager = new ProductManager(_mockRepositoryFactory.Object, _mockTimeManager.Object, _mapper);
+            var manager = new ProductManager(_mockRepositoryFactory.Object, _mapper);
             Exception exception = Assert.Throws<Exception>(() => manager.GetProductInfo(invalidLengthString));
             Assert.Equal($"Max length of product code should be {Constraints.CODE_COLUMN_MAX_LENGTH}.", exception.Message);
         }
@@ -211,7 +206,7 @@ namespace ServiceTests
             var list = new List<Product>();
             _mockRepository.Setup(x => x.GetByCondition(It.IsAny<Expression<Func<Product, bool>>>())).Returns(list.AsQueryable());
             _mockRepositoryFactory.Setup(x => x.GetRepository<Product>()).Returns(_mockRepository.Object);
-            var manager = new ProductManager(_mockRepositoryFactory.Object, _mockTimeManager.Object, _mapper);
+            var manager = new ProductManager(_mockRepositoryFactory.Object, _mapper);
             Exception exception = Assert.Throws<Exception>(() => manager.GetProductInfo("product"));
             Assert.Equal("Product not found.", exception.Message);
         }
@@ -229,7 +224,7 @@ namespace ServiceTests
             var list = new List<Product> { sampleProduct };
             _mockRepository.Setup(x => x.GetByCondition(It.IsAny<Expression<Func<Product, bool>>>())).Returns(list.AsQueryable());
             _mockRepositoryFactory.Setup(x => x.GetRepository<Product>()).Returns(_mockRepository.Object);
-            var manager = new ProductManager(_mockRepositoryFactory.Object, _mockTimeManager.Object, _mapper);
+            var manager = new ProductManager(_mockRepositoryFactory.Object, _mapper);
             var product = manager.GetProductInfo("product");
             Assert.Equal(sampleProduct.Code, product.Code);
             Assert.Equal(sampleProduct.Stock, product.Stock);
@@ -239,7 +234,7 @@ namespace ServiceTests
         [Fact]
         public void Test_UpdateProductPrice_Zero_Price()
         {
-            var manager = new ProductManager(_mockRepositoryFactory.Object, _mockTimeManager.Object, _mapper);
+            var manager = new ProductManager(_mockRepositoryFactory.Object, _mapper);
             Exception exception = Assert.Throws<Exception>(() => manager.UpdateProductPrice(Guid.NewGuid(), 0));
             Assert.Equal("Price is invalid.", exception.Message);
         }
@@ -247,7 +242,7 @@ namespace ServiceTests
         [Fact]
         public void Test_UpdateProductPrice_Negative_Price()
         {
-            var manager = new ProductManager(_mockRepositoryFactory.Object, _mockTimeManager.Object, _mapper);
+            var manager = new ProductManager(_mockRepositoryFactory.Object, _mapper);
             Exception exception = Assert.Throws<Exception>(() => manager.UpdateProductPrice(Guid.NewGuid(), -1));
             Assert.Equal("Price is invalid.", exception.Message);
         }
@@ -259,7 +254,7 @@ namespace ServiceTests
             Product product = null;
             _mockRepository.Setup(x => x.Get(It.IsAny<Guid>())).Returns(product);
             _mockRepositoryFactory.Setup(x => x.GetRepository<Product>()).Returns(_mockRepository.Object);
-            var manager = new ProductManager(_mockRepositoryFactory.Object, _mockTimeManager.Object, _mapper);
+            var manager = new ProductManager(_mockRepositoryFactory.Object, _mapper);
             Exception exception = Assert.Throws<Exception>(() => manager.UpdateProductPrice(Guid.NewGuid(), 10));
             Assert.Equal("Product not found.", exception.Message);
         }
@@ -278,7 +273,7 @@ namespace ServiceTests
             }; 
             _mockRepository.Setup(x => x.Get(It.IsAny<Guid>())).Returns(product);
             _mockRepositoryFactory.Setup(x => x.GetRepository<Product>()).Returns(_mockRepository.Object);
-            var manager = new ProductManager(_mockRepositoryFactory.Object, _mockTimeManager.Object, _mapper);
+            var manager = new ProductManager(_mockRepositoryFactory.Object, _mapper);
             manager.UpdateProductPrice(sampleGuid, 10);
             _mockRepository.Verify(x => x.Update(
                 It.IsAny<Product>(),
@@ -300,7 +295,7 @@ namespace ServiceTests
             };
             _mockRepository.Setup(x => x.Get(It.IsAny<Guid>())).Returns(product);
             _mockRepositoryFactory.Setup(x => x.GetRepository<Product>()).Returns(_mockRepository.Object);
-            var manager = new ProductManager(_mockRepositoryFactory.Object, _mockTimeManager.Object, _mapper);
+            var manager = new ProductManager(_mockRepositoryFactory.Object, _mapper);
             manager.UpdateProductStock(sampleGuid, 0);
             _mockRepository.Verify(x => x.Update(
                 It.IsAny<Product>(),
@@ -311,7 +306,7 @@ namespace ServiceTests
         [Fact]
         public void Test_UpdateProductStock_Negative_Stock()
         {
-            var manager = new ProductManager(_mockRepositoryFactory.Object, _mockTimeManager.Object, _mapper);
+            var manager = new ProductManager(_mockRepositoryFactory.Object, _mapper);
             Exception exception = Assert.Throws<Exception>(() => manager.UpdateProductStock(Guid.NewGuid(), -1));
             Assert.Equal("Stock is invalid.", exception.Message);
         }
@@ -323,7 +318,7 @@ namespace ServiceTests
             Product product = null;
             _mockRepository.Setup(x => x.Get(It.IsAny<Guid>())).Returns(product);
             _mockRepositoryFactory.Setup(x => x.GetRepository<Product>()).Returns(_mockRepository.Object);
-            var manager = new ProductManager(_mockRepositoryFactory.Object, _mockTimeManager.Object, _mapper);
+            var manager = new ProductManager(_mockRepositoryFactory.Object, _mapper);
             Exception exception = Assert.Throws<Exception>(() => manager.UpdateProductStock(Guid.NewGuid(), 10));
             Assert.Equal("Product not found.", exception.Message);
         }
@@ -342,7 +337,7 @@ namespace ServiceTests
             };
             _mockRepository.Setup(x => x.Get(It.IsAny<Guid>())).Returns(product);
             _mockRepositoryFactory.Setup(x => x.GetRepository<Product>()).Returns(_mockRepository.Object);
-            var manager = new ProductManager(_mockRepositoryFactory.Object, _mockTimeManager.Object, _mapper);
+            var manager = new ProductManager(_mockRepositoryFactory.Object, _mapper);
             manager.UpdateProductStock(sampleGuid, 10);
             _mockRepository.Verify(x => x.Update(
                 It.IsAny<Product>(),
