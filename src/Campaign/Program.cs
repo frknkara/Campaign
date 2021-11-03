@@ -10,6 +10,7 @@ using Service.Contracts;
 using Service.Managers;
 using AutoMapper;
 using System;
+using Service.Services;
 
 namespace Campaign
 {
@@ -37,6 +38,10 @@ namespace Campaign
                     services.AddTransient<IProductManager, ProductManager>();
                     services.AddTransient<IOrderManager, OrderManager>();
                     services.AddTransient<ICampaignManager, CampaignManager>();
+                    services.AddTransient<ITimeService, TimeService>();
+                    services.AddTransient<IProductService, ProductService>();
+                    services.AddTransient<IOrderService, OrderService>();
+                    services.AddTransient<ICampaignService, CampaignService>();
                 })
                 .Build();
 
