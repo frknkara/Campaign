@@ -37,6 +37,27 @@ namespace ServiceTests
         }
 
         [Fact]
+        public void Test_CreateCampaign_Active_Campaign_Exist()
+        {
+            _mockTimeManager.Setup(x => x.GetTimeValue()).Returns(5);
+            var activeCampaign = new CampaignDto
+            {
+                ProductId = sampleProductId,
+                Duration = 5,
+                Name = "campaign",
+                PriceManipulationLimit = 20,
+                TargetSalesCount = 100
+            };
+            _mockProductManager.Setup(x => x.GetActiveCampaign(It.IsAny<ProductDto>(), It.IsAny<int>())).Returns(activeCampaign);
+            var service = new CampaignService(_mockCampaignManager.Object, _mockProductManager.Object, _mockTimeManager.Object);
+            Exception exception = Assert.Throws<Exception>(() => service.CreateCampaign("campaign", sampleProduct.Code, 5, 20, 100));
+            _mockProductManager.Verify(x => x.GetProductInfo(sampleProduct.Code));
+            _mockTimeManager.Verify(x => x.GetTimeValue());
+            _mockProductManager.Verify(x => x.GetActiveCampaign(sampleProduct, 5));
+            Assert.Equal($"There is an active campaign with {activeCampaign.Name} name. New campaign can't be created for this product.", exception.Message);
+        }
+
+        [Fact]
         public void Test_CreateCampaign()
         {
             _mockTimeManager.Setup(x => x.GetTimeValue()).Returns(0);
@@ -56,11 +77,14 @@ namespace ServiceTests
                 PriceManipulationLimit = 20,
                 TargetSalesCount = 100
             };
+            CampaignDto activeCampaign = null;
+            _mockProductManager.Setup(x => x.GetActiveCampaign(It.IsAny<ProductDto>(), It.IsAny<int>())).Returns(activeCampaign);
             _mockCampaignManager.Setup(x => x.CreateCampaign(It.IsAny<CreateCampaignDto>())).Returns(campaign);
             var service = new CampaignService(_mockCampaignManager.Object, _mockProductManager.Object, _mockTimeManager.Object);
             var result = service.CreateCampaign(createCampaign.Name, createCampaign.ProductCode, createCampaign.Duration, createCampaign.PriceManipulationLimit, createCampaign.TargetSalesCount);
             _mockProductManager.Verify(x => x.GetProductInfo(createCampaign.ProductCode));
             _mockTimeManager.Verify(x => x.GetTimeValue());
+            _mockProductManager.Verify(x => x.GetActiveCampaign(sampleProduct, 0));
             Assert.Equal($"Campaign created; name {createCampaign.Name}, product {createCampaign.ProductCode}, duration {createCampaign.Duration}, limit {createCampaign.PriceManipulationLimit}, target sales count {createCampaign.TargetSalesCount}", result);
         }
 
@@ -99,7 +123,7 @@ namespace ServiceTests
                     CreationTime = 5
                 }
             };
-            _mockCampaignManager.Setup(x => x.GetCampaignOrders(It.IsAny<string>())).Returns(sampleOrders);
+            _mockCampaignManager.Setup(x => x.GetCampaignOrders(It.IsAny<CampaignDto>())).Returns(sampleOrders);
             var service = new CampaignService(_mockCampaignManager.Object, _mockProductManager.Object, _mockTimeManager.Object);
             var result = service.GetCampaignInfo(campaign.Name);
             Assert.Equal($"Campaign {campaign.Name} info; Status Active, Target Sales {campaign.TargetSalesCount}, Total Sales {12}, Turnover {0}, Average Item Price {0}", result);
@@ -140,7 +164,7 @@ namespace ServiceTests
                     CreationTime = 5
                 }
             };
-            _mockCampaignManager.Setup(x => x.GetCampaignOrders(It.IsAny<string>())).Returns(sampleOrders);
+            _mockCampaignManager.Setup(x => x.GetCampaignOrders(It.IsAny<CampaignDto>())).Returns(sampleOrders);
             var service = new CampaignService(_mockCampaignManager.Object, _mockProductManager.Object, _mockTimeManager.Object);
             var result = service.GetCampaignInfo(campaign.Name);
             Assert.Equal($"Campaign {campaign.Name} info; Status Ended, Target Sales {campaign.TargetSalesCount}, Total Sales {12}, Turnover {0}, Average Item Price {0}", result);
@@ -161,7 +185,7 @@ namespace ServiceTests
             };
             _mockCampaignManager.Setup(x => x.GetCampaignInfo(It.IsAny<string>())).Returns(campaign);
             var sampleOrders = new List<OrderDto>();
-            _mockCampaignManager.Setup(x => x.GetCampaignOrders(It.IsAny<string>())).Returns(sampleOrders);
+            _mockCampaignManager.Setup(x => x.GetCampaignOrders(It.IsAny<CampaignDto>())).Returns(sampleOrders);
             var service = new CampaignService(_mockCampaignManager.Object, _mockProductManager.Object, _mockTimeManager.Object);
             var result = service.GetCampaignInfo(campaign.Name);
             Assert.Equal($"Campaign {campaign.Name} info; Status Active, Target Sales {campaign.TargetSalesCount}, Total Sales {0}, Turnover {0}, Average Item Price -", result);

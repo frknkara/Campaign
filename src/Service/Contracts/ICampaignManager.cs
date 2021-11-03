@@ -8,6 +8,6 @@ namespace Service.Contracts
     {
         CampaignDto CreateCampaign(CreateCampaignDto campaign);
         CampaignDto GetCampaignInfo(string campaignName);
-        List<OrderDto> GetCampaignOrders(string campaignName);
+        List<OrderDto> GetCampaignOrders(CampaignDto campaign);
     }
 }

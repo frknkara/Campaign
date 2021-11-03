@@ -1,4 +1,5 @@
-﻿using Model.Product;
+﻿using Model.Campaign;
+using Model.Product;
 using System;
 
 namespace Service.Contracts
@@ -9,5 +10,6 @@ namespace Service.Contracts
         ProductDto CreateProduct(CreateProductDto product);
         void UpdateProductStock(Guid id, int stock);
         void UpdateProductPrice(Guid id, int price);
+        CampaignDto GetActiveCampaign(ProductDto product, int currentTime);
     }
 }

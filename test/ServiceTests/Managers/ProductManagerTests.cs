@@ -269,7 +269,7 @@ namespace ServiceTests
                 Code = "product",
                 Stock = 100,
                 Price = 50
-            }; 
+            };
             _mockRepository.Setup(x => x.Get(It.IsAny<Guid>())).Returns(product);
             _mockRepositoryFactory.Setup(x => x.GetRepository<Product>()).Returns(_mockRepository.Object);
             var manager = new ProductManager(_mockRepositoryFactory.Object, _mapper);
@@ -342,6 +342,38 @@ namespace ServiceTests
                 It.IsAny<Product>(),
                 It.IsAny<bool>()));
             Assert.Equal(10, product.Stock);
+        }
+
+        [Fact]
+        public void Test_GetActiveCampaign()
+        {
+            var sampleProduct = new ProductDto
+            {
+                Id = Guid.NewGuid(),
+                Code = "product",
+                Stock = 100,
+                Price = 50
+            };
+
+            var _mockCampaignRepository = new Mock<IRepository<Campaign>>();
+            var sampleCampaigns = new List<Campaign>
+            {
+                new Campaign
+                {
+                    ProductId = sampleProduct.Id,
+                    Name = "campaign",
+                    CreationTime = 3,
+                    Duration = 5
+                }
+            };
+            _mockCampaignRepository.Setup(x => x.GetByCondition(It.IsAny<Expression<Func<Campaign, bool>>>())).Returns(sampleCampaigns.AsQueryable());
+            _mockRepositoryFactory.Setup(x => x.GetRepository<Campaign>()).Returns(_mockCampaignRepository.Object);
+            var manager = new ProductManager(_mockRepositoryFactory.Object, _mapper);
+            var result = manager.GetActiveCampaign(sampleProduct, 4);
+            Assert.NotNull(result);
+            Assert.Equal(sampleProduct.Id, result.ProductId);
+            Assert.Equal("campaign", result.Name);
+            Assert.Equal(5, result.Duration);
         }
     }
 }

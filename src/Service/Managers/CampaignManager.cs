@@ -59,14 +59,14 @@ namespace Service.Managers
             return _mapper.Map<CampaignDto>(campaign);
         }
 
-        public List<OrderDto> GetCampaignOrders(string campaignName)
+        public List<OrderDto> GetCampaignOrders(CampaignDto campaign)
         {
-            var campaign = GetCampaignInfo(campaignName);
             var orderRepository = _repositoryFactory.GetRepository<Order>();
             var campaignEndTime = campaign.CreationTime + campaign.Duration;
             var result = orderRepository.GetByCondition(x => x.ProductId == campaign.ProductId
                 && x.CreationTime >= campaign.CreationTime
-                && x.CreationTime <= campaignEndTime).ToList();
+                && x.CreationTime <= campaignEndTime
+                && x.RealCreationTime >= campaign.RealCreationTime).ToList();
             return _mapper.Map<List<OrderDto>>(result);
         }
     }

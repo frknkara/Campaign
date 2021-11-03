@@ -21,6 +21,10 @@ namespace Service.Services
         public string CreateCampaign(string name, string productCode, int duration, int priceManipulationLimit, int targetSalesCount)
         {
             var product = _productManager.GetProductInfo(productCode);
+            var currentTime = _timeManager.GetTimeValue();
+            var activeCampaign = _productManager.GetActiveCampaign(product, currentTime);
+            if (activeCampaign != null)
+                throw new Exception($"There is an active campaign with {activeCampaign.Name} name. New campaign can't be created for this product.");
             var campaign = new CreateCampaignDto
             {
                 Name = name,
@@ -29,7 +33,7 @@ namespace Service.Services
                 Duration = duration,
                 PriceManipulationLimit = priceManipulationLimit,
                 TargetSalesCount = targetSalesCount,
-                CreationTime = _timeManager.GetTimeValue()
+                CreationTime = currentTime
             };
             var result = _campaignManager.CreateCampaign(campaign);
             return $"Campaign created; name {result.Name}, product {productCode}, duration {result.Duration}, limit {result.PriceManipulationLimit}, target sales count {result.TargetSalesCount}";
@@ -37,14 +41,14 @@ namespace Service.Services
 
         public string GetCampaignInfo(string name)
         {
-            var result = _campaignManager.GetCampaignInfo(name);
+            var campaign = _campaignManager.GetCampaignInfo(name);
             var currentTime = _timeManager.GetTimeValue();
-            var status = result.CreationTime + result.Duration < currentTime ? "Ended" : "Active";
-            var orders = _campaignManager.GetCampaignOrders(name);
+            var status = campaign.CreationTime + campaign.Duration < currentTime ? "Ended" : "Active";
+            var orders = _campaignManager.GetCampaignOrders(campaign);
             var totalSales = orders.Sum(x => x.Quantity);
             var turnover = 0; //TODO: consider turnover
             var averageItemPrice = (totalSales == 0) ? "-" : string.Format("{0:0.##}", (double)turnover / totalSales);
-            return $"Campaign {result.Name} info; Status {status}, Target Sales {result.TargetSalesCount}, Total Sales {totalSales}, Turnover {turnover}, Average Item Price {averageItemPrice}";
+            return $"Campaign {campaign.Name} info; Status {status}, Target Sales {campaign.TargetSalesCount}, Total Sales {totalSales}, Turnover {turnover}, Average Item Price {averageItemPrice}";
         }
     }
 }

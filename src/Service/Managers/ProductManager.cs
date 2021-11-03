@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Data.Entities;
 using Data.Repositories;
+using Model.Campaign;
 using Model.Product;
 using Model.Shared;
 using Service.Contracts;
@@ -12,11 +13,13 @@ namespace Service.Managers
     public class ProductManager : IProductManager
     {
         private readonly IRepository<Product> _repository;
+        private readonly IRepositoryFactory _repositoryFactory;
         private readonly IMapper _mapper;
 
         public ProductManager(IRepositoryFactory repositoryFactory, IMapper mapper)
         {
             _repository = repositoryFactory.GetRepository<Product>();
+            _repositoryFactory = repositoryFactory;
             _mapper = mapper;
         }
 
@@ -73,6 +76,17 @@ namespace Service.Managers
                 throw new Exception("Product not found.");
             product.Stock = stock;
             _repository.Update(product);
+        }
+
+        public CampaignDto GetActiveCampaign(ProductDto product, int currentTime)
+        {
+            var campaignRepository = _repositoryFactory.GetRepository<Campaign>();
+            var result = campaignRepository.GetByCondition(x => x.ProductId == product.Id
+                && x.CreationTime <= currentTime
+                && (x.CreationTime + x.Duration) >= currentTime).FirstOrDefault();
+            if (result == null)
+                return null;
+            return _mapper.Map<CampaignDto>(result);
         }
     }
 }

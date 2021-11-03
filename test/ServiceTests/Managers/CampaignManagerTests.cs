@@ -309,8 +309,7 @@ namespace ServiceTests
         [Fact]
         public void Test_GetCampaignOrders()
         {
-            var _mockRepository = new Mock<IRepository<Campaign>>();
-            var sampleCampaign = new Campaign
+            var sampleCampaign = new CampaignDto
             {
                 Name = "campaign",
                 ProductId = Guid.NewGuid(),
@@ -319,9 +318,6 @@ namespace ServiceTests
                 TargetSalesCount = 100,
                 CreationTime = 0
             };
-            var list = new List<Campaign> { sampleCampaign };
-            _mockRepository.Setup(x => x.GetByCondition(It.IsAny<Expression<Func<Campaign, bool>>>())).Returns(list.AsQueryable());
-            _mockRepositoryFactory.Setup(x => x.GetRepository<Campaign>()).Returns(_mockRepository.Object);
 
             var _mockOrderRepository = new Mock<IRepository<Order>>();
             var sampleOrders = new List<Order>
@@ -348,7 +344,7 @@ namespace ServiceTests
             _mockOrderRepository.Setup(x => x.GetByCondition(It.IsAny<Expression<Func<Order, bool>>>())).Returns(sampleOrders.AsQueryable());
             _mockRepositoryFactory.Setup(x => x.GetRepository<Order>()).Returns(_mockOrderRepository.Object);
             var manager = new CampaignManager(_mockRepositoryFactory.Object, _mapper);
-            var result = manager.GetCampaignOrders("campaign");
+            var result = manager.GetCampaignOrders(sampleCampaign);
             Assert.Equal(3, result.Count);
             Assert.True(result.All(x => x.ProductId == sampleCampaign.ProductId));
             Assert.Equal(new List<int> { 3, 4, 5 }, result.Select(x => x.Quantity).ToList());
