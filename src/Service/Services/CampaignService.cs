@@ -46,9 +46,14 @@ namespace Service.Services
             var status = campaign.CreationTime + campaign.Duration < currentTime ? "Ended" : "Active";
             var orders = _campaignManager.GetCampaignOrders(campaign);
             var totalSales = orders.Sum(x => x.Quantity);
-            var turnover = 0; //TODO: consider turnover
-            var averageItemPrice = (totalSales == 0) ? "-" : string.Format("{0:0.##}", (double)turnover / totalSales);
+            var turnover = orders.Sum(x => x.UnitPrice * x.Quantity);
+            var averageItemPrice = GetFormattedAverageItemPrice(turnover, totalSales);
             return $"Campaign {campaign.Name} info; Status {status}, Target Sales {campaign.TargetSalesCount}, Total Sales {totalSales}, Turnover {turnover}, Average Item Price {averageItemPrice}";
+        }
+
+        private string GetFormattedAverageItemPrice(int turnover, int totalSales)
+        {
+            return (totalSales == 0) ? "-" : string.Format("{0:0.##}", (double)turnover / totalSales).Replace(",", ".");
         }
     }
 }

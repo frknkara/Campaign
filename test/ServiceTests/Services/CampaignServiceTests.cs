@@ -31,7 +31,8 @@ namespace ServiceTests
                 Code = "product",
                 Price = 100,
                 Stock = 50,
-                CreationTime = 0
+                CreationTime = 0,
+                InitialPrice = 200
             };
             _mockProductManager.Setup(x => x.GetProductInfo(It.IsAny<string>())).Returns(sampleProduct);
         }
@@ -108,25 +109,29 @@ namespace ServiceTests
                 {
                     ProductId = sampleProductId,
                     Quantity = 3,
-                    CreationTime = 0
+                    CreationTime = 0,
+                    UnitPrice = 200
                 },
                 new OrderDto
                 {
                     ProductId = sampleProductId,
                     Quantity = 4,
-                    CreationTime = 1
+                    CreationTime = 1,
+                    UnitPrice = 150
                 },
                 new OrderDto
                 {
                     ProductId = sampleProductId,
                     Quantity = 5,
-                    CreationTime = 5
+                    CreationTime = 5,
+                    UnitPrice = 100
                 }
             };
             _mockCampaignManager.Setup(x => x.GetCampaignOrders(It.IsAny<CampaignDto>())).Returns(sampleOrders);
             var service = new CampaignService(_mockCampaignManager.Object, _mockProductManager.Object, _mockTimeManager.Object);
             var result = service.GetCampaignInfo(campaign.Name);
-            Assert.Equal($"Campaign {campaign.Name} info; Status Active, Target Sales {campaign.TargetSalesCount}, Total Sales {12}, Turnover {0}, Average Item Price {0}", result);
+            //Turnover 3*200 + 4*150 + 5*100, total sales 3 + 4 + 5, average 141.666666667
+            Assert.Equal($"Campaign {campaign.Name} info; Status Active, Target Sales {campaign.TargetSalesCount}, Total Sales 12, Turnover 1700, Average Item Price 141.67", result);
         }
 
         [Fact]
@@ -149,25 +154,29 @@ namespace ServiceTests
                 {
                     ProductId = sampleProductId,
                     Quantity = 3,
-                    CreationTime = 0
+                    CreationTime = 0,
+                    UnitPrice = 2000
                 },
                 new OrderDto
                 {
                     ProductId = sampleProductId,
                     Quantity = 4,
-                    CreationTime = 1
+                    CreationTime = 1,
+                    UnitPrice = 2000
                 },
                 new OrderDto
                 {
                     ProductId = sampleProductId,
                     Quantity = 5,
-                    CreationTime = 5
+                    CreationTime = 5,
+                    UnitPrice = 1000
                 }
             };
             _mockCampaignManager.Setup(x => x.GetCampaignOrders(It.IsAny<CampaignDto>())).Returns(sampleOrders);
             var service = new CampaignService(_mockCampaignManager.Object, _mockProductManager.Object, _mockTimeManager.Object);
             var result = service.GetCampaignInfo(campaign.Name);
-            Assert.Equal($"Campaign {campaign.Name} info; Status Ended, Target Sales {campaign.TargetSalesCount}, Total Sales {12}, Turnover {0}, Average Item Price {0}", result);
+            //Turnover 3*2000 + 4*2000 + 5*1000, total sales 3 + 4 + 5, average 1583.3333333334
+            Assert.Equal($"Campaign {campaign.Name} info; Status Ended, Target Sales {campaign.TargetSalesCount}, Total Sales 12, Turnover 19000, Average Item Price 1583.33", result);
         }
 
         [Fact]
@@ -188,9 +197,46 @@ namespace ServiceTests
             _mockCampaignManager.Setup(x => x.GetCampaignOrders(It.IsAny<CampaignDto>())).Returns(sampleOrders);
             var service = new CampaignService(_mockCampaignManager.Object, _mockProductManager.Object, _mockTimeManager.Object);
             var result = service.GetCampaignInfo(campaign.Name);
-            Assert.Equal($"Campaign {campaign.Name} info; Status Active, Target Sales {campaign.TargetSalesCount}, Total Sales {0}, Turnover {0}, Average Item Price -", result);
+            Assert.Equal($"Campaign {campaign.Name} info; Status Active, Target Sales {campaign.TargetSalesCount}, Total Sales 0, Turnover 0, Average Item Price -", result);
         }
 
-        //TODO: Turnover consideration
+
+        [Fact]
+        public void Test_GetCampaignInfo_Integer_AverageItemPrice()
+        {
+            _mockTimeManager.Setup(x => x.GetTimeValue()).Returns(1);
+            var campaign = new CampaignDto
+            {
+                ProductId = sampleProductId,
+                Duration = 5,
+                Name = "campaign",
+                PriceManipulationLimit = 20,
+                TargetSalesCount = 100,
+                CreationTime = 0
+            };
+            _mockCampaignManager.Setup(x => x.GetCampaignInfo(It.IsAny<string>())).Returns(campaign);
+            var sampleOrders = new List<OrderDto>
+            {
+                new OrderDto
+                {
+                    ProductId = sampleProductId,
+                    Quantity = 5,
+                    CreationTime = 0,
+                    UnitPrice = 200
+                },
+                new OrderDto
+                {
+                    ProductId = sampleProductId,
+                    Quantity = 5,
+                    CreationTime = 1,
+                    UnitPrice = 100
+                }
+            };
+            _mockCampaignManager.Setup(x => x.GetCampaignOrders(It.IsAny<CampaignDto>())).Returns(sampleOrders);
+            var service = new CampaignService(_mockCampaignManager.Object, _mockProductManager.Object, _mockTimeManager.Object);
+            var result = service.GetCampaignInfo(campaign.Name);
+            //Turnover 5*200 + 5*100, total sales 5 + 5
+            Assert.Equal($"Campaign {campaign.Name} info; Status Active, Target Sales {campaign.TargetSalesCount}, Total Sales 10, Turnover 1500, Average Item Price 150", result);
+        }
     }
 }
