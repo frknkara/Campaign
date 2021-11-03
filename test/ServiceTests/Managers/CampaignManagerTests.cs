@@ -2,11 +2,9 @@ using AutoMapper;
 using Data.Entities;
 using Data.Repositories;
 using Model.Campaign;
-using Model.Product;
 using Model.Shared;
 using Moq;
 using Service;
-using Service.Contracts;
 using Service.Managers;
 using System;
 using System.Collections.Generic;
@@ -19,30 +17,11 @@ namespace ServiceTests
     public class CampaignManagerTests
     {
         private Mock<IRepositoryFactory> _mockRepositoryFactory;
-        private Mock<IProductManager> _mockProductManager;
-        private Mock<ITimeManager> _mockTimeManager;
         private IMapper _mapper;
-        private Guid sampleProductId;
-        private ProductDto sampleProduct;
 
         public CampaignManagerTests()
         {
             _mockRepositoryFactory = new Mock<IRepositoryFactory>();
-
-            _mockProductManager = new Mock<IProductManager>();
-            sampleProductId = Guid.NewGuid();
-            sampleProduct = new ProductDto
-            {
-                Id = sampleProductId,
-                Code = "product",
-                Price = 100,
-                Stock = 50,
-                CreationTime = 0
-            };
-            _mockProductManager.Setup(x => x.GetProductInfo(It.IsAny<string>())).Returns(sampleProduct);
-
-            _mockTimeManager = new Mock<ITimeManager>();
-            _mockTimeManager.Setup(x => x.GetTimeValue()).Returns(0);
 
             var mapperConfiguration = new MapperConfiguration(conf => conf.AddProfile(new MappingProfiles()));
             _mapper = mapperConfiguration.CreateMapper();
@@ -59,7 +38,7 @@ namespace ServiceTests
                 PriceManipulationLimit = 20,
                 TargetSalesCount = 50
             };
-            var manager = new CampaignManager(_mockRepositoryFactory.Object, _mockProductManager.Object, _mockTimeManager.Object, _mapper);
+            var manager = new CampaignManager(_mockRepositoryFactory.Object, _mapper);
             Exception exception = Assert.Throws<Exception>(() => manager.CreateCampaign(createCampaign));
             Assert.Equal("Campaign name is not valid.", exception.Message);
         }
@@ -75,7 +54,7 @@ namespace ServiceTests
                 PriceManipulationLimit = 20,
                 TargetSalesCount = 50
             };
-            var manager = new CampaignManager(_mockRepositoryFactory.Object, _mockProductManager.Object, _mockTimeManager.Object, _mapper);
+            var manager = new CampaignManager(_mockRepositoryFactory.Object, _mapper);
             Exception exception = Assert.Throws<Exception>(() => manager.CreateCampaign(createCampaign));
             Assert.Equal("Campaign name is not valid.", exception.Message);
         }
@@ -92,7 +71,7 @@ namespace ServiceTests
                 PriceManipulationLimit = 20,
                 TargetSalesCount = 50
             };
-            var manager = new CampaignManager(_mockRepositoryFactory.Object, _mockProductManager.Object, _mockTimeManager.Object, _mapper);
+            var manager = new CampaignManager(_mockRepositoryFactory.Object, _mapper);
             Exception exception = Assert.Throws<Exception>(() => manager.CreateCampaign(createCampaign));
             Assert.Equal($"Max length of campaign name should be {Constraints.NAME_COLUMN_MAX_LENGTH}.", exception.Message);
         }
@@ -108,7 +87,7 @@ namespace ServiceTests
                 PriceManipulationLimit = 20,
                 TargetSalesCount = 50
             };
-            var manager = new CampaignManager(_mockRepositoryFactory.Object, _mockProductManager.Object, _mockTimeManager.Object, _mapper);
+            var manager = new CampaignManager(_mockRepositoryFactory.Object, _mapper);
             Exception exception = Assert.Throws<Exception>(() => manager.CreateCampaign(createCampaign));
             Assert.Equal("Duration is invalid.", exception.Message);
         }
@@ -124,7 +103,7 @@ namespace ServiceTests
                 PriceManipulationLimit = 20,
                 TargetSalesCount = 50
             };
-            var manager = new CampaignManager(_mockRepositoryFactory.Object, _mockProductManager.Object, _mockTimeManager.Object, _mapper);
+            var manager = new CampaignManager(_mockRepositoryFactory.Object, _mapper);
             Exception exception = Assert.Throws<Exception>(() => manager.CreateCampaign(createCampaign));
             Assert.Equal("Duration is invalid.", exception.Message);
         }
@@ -140,7 +119,7 @@ namespace ServiceTests
                 PriceManipulationLimit = 0,
                 TargetSalesCount = 50
             };
-            var manager = new CampaignManager(_mockRepositoryFactory.Object, _mockProductManager.Object, _mockTimeManager.Object, _mapper);
+            var manager = new CampaignManager(_mockRepositoryFactory.Object, _mapper);
             Exception exception = Assert.Throws<Exception>(() => manager.CreateCampaign(createCampaign));
             Assert.Equal("Price manipulation limit is invalid.", exception.Message);
         }
@@ -156,7 +135,7 @@ namespace ServiceTests
                 PriceManipulationLimit = -1,
                 TargetSalesCount = 50
             };
-            var manager = new CampaignManager(_mockRepositoryFactory.Object, _mockProductManager.Object, _mockTimeManager.Object, _mapper);
+            var manager = new CampaignManager(_mockRepositoryFactory.Object, _mapper);
             Exception exception = Assert.Throws<Exception>(() => manager.CreateCampaign(createCampaign));
             Assert.Equal("Price manipulation limit is invalid.", exception.Message);
         }
@@ -172,7 +151,7 @@ namespace ServiceTests
                 PriceManipulationLimit = 100,
                 TargetSalesCount = 50
             };
-            var manager = new CampaignManager(_mockRepositoryFactory.Object, _mockProductManager.Object, _mockTimeManager.Object, _mapper);
+            var manager = new CampaignManager(_mockRepositoryFactory.Object, _mapper);
             Exception exception = Assert.Throws<Exception>(() => manager.CreateCampaign(createCampaign));
             Assert.Equal("Price manipulation limit is invalid.", exception.Message);
         }
@@ -188,7 +167,7 @@ namespace ServiceTests
                 PriceManipulationLimit = 101,
                 TargetSalesCount = 50
             };
-            var manager = new CampaignManager(_mockRepositoryFactory.Object, _mockProductManager.Object, _mockTimeManager.Object, _mapper);
+            var manager = new CampaignManager(_mockRepositoryFactory.Object, _mapper);
             Exception exception = Assert.Throws<Exception>(() => manager.CreateCampaign(createCampaign));
             Assert.Equal("Price manipulation limit is invalid.", exception.Message);
         }
@@ -204,7 +183,7 @@ namespace ServiceTests
                 PriceManipulationLimit = 20,
                 TargetSalesCount = -1
             };
-            var manager = new CampaignManager(_mockRepositoryFactory.Object, _mockProductManager.Object, _mockTimeManager.Object, _mapper);
+            var manager = new CampaignManager(_mockRepositoryFactory.Object, _mapper);
             Exception exception = Assert.Throws<Exception>(() => manager.CreateCampaign(createCampaign));
             Assert.Equal("Target sales count is invalid.", exception.Message);
         }
@@ -234,7 +213,7 @@ namespace ServiceTests
             };
             _mockRepository.Setup(x => x.GetByCondition(It.IsAny<Expression<Func<Campaign, bool>>>())).Returns(list.AsQueryable());
             _mockRepositoryFactory.Setup(x => x.GetRepository<Campaign>()).Returns(_mockRepository.Object);
-            var manager = new CampaignManager(_mockRepositoryFactory.Object, _mockProductManager.Object, _mockTimeManager.Object, _mapper);
+            var manager = new CampaignManager(_mockRepositoryFactory.Object, _mapper);
             Exception exception = Assert.Throws<Exception>(() => manager.CreateCampaign(createCampaign));
             Assert.Equal($"The campaign with {createCampaign.Name} name has already been created.", exception.Message);
         }
@@ -245,6 +224,7 @@ namespace ServiceTests
             var createCampaign = new CreateCampaignDto
             {
                 Name = "campaign",
+                ProductId = Guid.NewGuid(),
                 ProductCode = "product",
                 Duration = 10,
                 PriceManipulationLimit = 20,
@@ -252,15 +232,13 @@ namespace ServiceTests
             };
             var _mockRepository = new Mock<IRepository<Campaign>>();
             _mockRepositoryFactory.Setup(x => x.GetRepository<Campaign>()).Returns(_mockRepository.Object);
-            var manager = new CampaignManager(_mockRepositoryFactory.Object, _mockProductManager.Object, _mockTimeManager.Object, _mapper);
+            var manager = new CampaignManager(_mockRepositoryFactory.Object, _mapper);
             var campaignResult = manager.CreateCampaign(createCampaign);
-            _mockProductManager.Verify(x => x.GetProductInfo(sampleProduct.Code));
-            _mockTimeManager.Verify(x => x.GetTimeValue());
             
             _mockRepository.Verify(x => x.Create(
                 It.IsAny<Campaign>(),
                 It.IsAny<bool>()));
-            Assert.Equal(sampleProductId, campaignResult.ProductId);
+            Assert.Equal(createCampaign.ProductId, campaignResult.ProductId);
             Assert.Equal(createCampaign.Name, campaignResult.Name);
             Assert.Equal(createCampaign.Duration, campaignResult.Duration);
             Assert.Equal(createCampaign.PriceManipulationLimit, campaignResult.PriceManipulationLimit);
@@ -270,7 +248,7 @@ namespace ServiceTests
         [Fact]
         public void Test_GetCampaignInfo_Null_Name()
         {
-            var manager = new CampaignManager(_mockRepositoryFactory.Object, _mockProductManager.Object, _mockTimeManager.Object, _mapper);
+            var manager = new CampaignManager(_mockRepositoryFactory.Object, _mapper);
             Exception exception = Assert.Throws<Exception>(() => manager.GetCampaignInfo(null));
             Assert.Equal("Campaign name is not valid.", exception.Message);
         }
@@ -278,7 +256,7 @@ namespace ServiceTests
         [Fact]
         public void Test_GetCampaignInfo_Empty_String_Name()
         {
-            var manager = new CampaignManager(_mockRepositoryFactory.Object, _mockProductManager.Object, _mockTimeManager.Object, _mapper);
+            var manager = new CampaignManager(_mockRepositoryFactory.Object, _mapper);
             Exception exception = Assert.Throws<Exception>(() => manager.GetCampaignInfo(""));
             Assert.Equal("Campaign name is not valid.", exception.Message);
         }
@@ -287,7 +265,7 @@ namespace ServiceTests
         public void Test_GetCampaignInfo_Exceeds_Max_Length_Name()
         {
             var invalidLengthString = new string(Enumerable.Repeat("ABCDEF", Constraints.NAME_COLUMN_MAX_LENGTH + 1).Select(s => s[new Random().Next(s.Length)]).ToArray());
-            var manager = new CampaignManager(_mockRepositoryFactory.Object, _mockProductManager.Object, _mockTimeManager.Object, _mapper);
+            var manager = new CampaignManager(_mockRepositoryFactory.Object, _mapper);
             Exception exception = Assert.Throws<Exception>(() => manager.GetCampaignInfo(invalidLengthString));
             Assert.Equal($"Max length of campaign name should be {Constraints.NAME_COLUMN_MAX_LENGTH}.", exception.Message);
         }
@@ -299,7 +277,7 @@ namespace ServiceTests
             var list = new List<Campaign>();
             _mockRepository.Setup(x => x.GetByCondition(It.IsAny<Expression<Func<Campaign, bool>>>())).Returns(list.AsQueryable());
             _mockRepositoryFactory.Setup(x => x.GetRepository<Campaign>()).Returns(_mockRepository.Object);
-            var manager = new CampaignManager(_mockRepositoryFactory.Object, _mockProductManager.Object, _mockTimeManager.Object, _mapper);
+            var manager = new CampaignManager(_mockRepositoryFactory.Object, _mapper);
             Exception exception = Assert.Throws<Exception>(() => manager.GetCampaignInfo("product"));
             Assert.Equal("Campaign not found.", exception.Message);
         }
@@ -311,7 +289,7 @@ namespace ServiceTests
             var sampleCampaign = new Campaign
             {
                 Name = "campaign",
-                ProductId = sampleProductId,
+                ProductId = Guid.NewGuid(),
                 Duration = 10,
                 PriceManipulationLimit = 20,
                 TargetSalesCount = 100
@@ -319,13 +297,61 @@ namespace ServiceTests
             var list = new List<Campaign> { sampleCampaign };
             _mockRepository.Setup(x => x.GetByCondition(It.IsAny<Expression<Func<Campaign, bool>>>())).Returns(list.AsQueryable());
             _mockRepositoryFactory.Setup(x => x.GetRepository<Campaign>()).Returns(_mockRepository.Object);
-            var manager = new CampaignManager(_mockRepositoryFactory.Object, _mockProductManager.Object, _mockTimeManager.Object, _mapper);
+            var manager = new CampaignManager(_mockRepositoryFactory.Object, _mapper);
             var campaign = manager.GetCampaignInfo("campaign");
             Assert.Equal(sampleCampaign.Name, campaign.Name);
-            Assert.Equal(sampleProductId, campaign.ProductId);
+            Assert.Equal(sampleCampaign.ProductId, campaign.ProductId);
             Assert.Equal(sampleCampaign.Duration, campaign.Duration);
             Assert.Equal(sampleCampaign.PriceManipulationLimit, campaign.PriceManipulationLimit);
             Assert.Equal(sampleCampaign.TargetSalesCount, campaign.TargetSalesCount);
+        }
+
+        [Fact]
+        public void Test_GetCampaignOrders()
+        {
+            var _mockRepository = new Mock<IRepository<Campaign>>();
+            var sampleCampaign = new Campaign
+            {
+                Name = "campaign",
+                ProductId = Guid.NewGuid(),
+                Duration = 10,
+                PriceManipulationLimit = 20,
+                TargetSalesCount = 100,
+                CreationTime = 0
+            };
+            var list = new List<Campaign> { sampleCampaign };
+            _mockRepository.Setup(x => x.GetByCondition(It.IsAny<Expression<Func<Campaign, bool>>>())).Returns(list.AsQueryable());
+            _mockRepositoryFactory.Setup(x => x.GetRepository<Campaign>()).Returns(_mockRepository.Object);
+
+            var _mockOrderRepository = new Mock<IRepository<Order>>();
+            var sampleOrders = new List<Order>
+            {
+                new Order
+                {
+                    ProductId = sampleCampaign.ProductId,
+                    Quantity = 3,
+                    CreationTime = 0
+                },
+                new Order
+                {
+                    ProductId = sampleCampaign.ProductId,
+                    Quantity = 4,
+                    CreationTime = 1
+                },
+                new Order
+                {
+                    ProductId = sampleCampaign.ProductId,
+                    Quantity = 5,
+                    CreationTime = 10
+                }
+            };
+            _mockOrderRepository.Setup(x => x.GetByCondition(It.IsAny<Expression<Func<Order, bool>>>())).Returns(sampleOrders.AsQueryable());
+            _mockRepositoryFactory.Setup(x => x.GetRepository<Order>()).Returns(_mockOrderRepository.Object);
+            var manager = new CampaignManager(_mockRepositoryFactory.Object, _mapper);
+            var result = manager.GetCampaignOrders("campaign");
+            Assert.Equal(3, result.Count);
+            Assert.True(result.All(x => x.ProductId == sampleCampaign.ProductId));
+            Assert.Equal(new List<int> { 3, 4, 5 }, result.Select(x => x.Quantity).ToList());
         }
     }
 }

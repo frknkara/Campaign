@@ -1,4 +1,6 @@
 ﻿using Model.Campaign;
+using Model.Order;
+using System.Collections.Generic;
 
 namespace Service.Contracts
 {
@@ -6,5 +8,6 @@ namespace Service.Contracts
     {
         CampaignDto CreateCampaign(CreateCampaignDto campaign);
         CampaignDto GetCampaignInfo(string campaignName);
+        List<OrderDto> GetCampaignOrders(string campaignName);
     }
 }

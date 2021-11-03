@@ -2,9 +2,11 @@
 using Data.Entities;
 using Data.Repositories;
 using Model.Campaign;
+using Model.Order;
 using Model.Shared;
 using Service.Contracts;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Service.Managers
@@ -12,18 +14,13 @@ namespace Service.Managers
     public class CampaignManager : ICampaignManager
     {
         private readonly IRepository<Campaign> _repository;
-        private readonly IProductManager _productManager;
-        private readonly ITimeManager _timeManager;
+        private readonly IRepositoryFactory _repositoryFactory;
         private readonly IMapper _mapper;
 
-        public CampaignManager(IRepositoryFactory repositoryFactory,
-            IProductManager productManager, 
-            ITimeManager timeManager, 
-            IMapper mapper)
+        public CampaignManager(IRepositoryFactory repositoryFactory, IMapper mapper)
         {
             _repository = repositoryFactory.GetRepository<Campaign>();
-            _productManager = productManager;
-            _timeManager = timeManager;
+            _repositoryFactory = repositoryFactory;
             _mapper = mapper;
         }
 
@@ -39,14 +36,11 @@ namespace Service.Managers
                 throw new Exception("Price manipulation limit is invalid.");
             if (campaign.TargetSalesCount < 0)
                 throw new Exception("Target sales count is invalid.");
-            var product = _productManager.GetProductInfo(campaign.ProductCode);
             var existingCampaign = _repository.GetByCondition(x => x.Name == campaign.Name).FirstOrDefault();
             if (existingCampaign != null)
                 throw new Exception($"The campaign with {campaign.Name} name has already been created.");
 
             var entity = _mapper.Map<Campaign>(campaign);
-            entity.ProductId = product.Id;
-            entity.CreationTime = _timeManager.GetTimeValue();
 
             _repository.Create(entity);
             return _mapper.Map<CampaignDto>(entity);
@@ -63,6 +57,17 @@ namespace Service.Managers
             if (campaign == null)
                 throw new Exception("Campaign not found.");
             return _mapper.Map<CampaignDto>(campaign);
+        }
+
+        public List<OrderDto> GetCampaignOrders(string campaignName)
+        {
+            var campaign = GetCampaignInfo(campaignName);
+            var orderRepository = _repositoryFactory.GetRepository<Order>();
+            var campaignEndTime = campaign.CreationTime + campaign.Duration;
+            var result = orderRepository.GetByCondition(x => x.ProductId == campaign.ProductId
+                && x.CreationTime >= campaign.CreationTime
+                && x.CreationTime <= campaignEndTime).ToList();
+            return _mapper.Map<List<OrderDto>>(result);
         }
     }
 }
