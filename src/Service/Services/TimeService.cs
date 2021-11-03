@@ -11,10 +11,12 @@ namespace Service.Services
             _timeManager = timeManager;
         }
 
-        public void IncreaseTime(int hour)
+        public string IncreaseTime(int hour)
         {
-            _timeManager.IncreaseTimeValue(hour);
+            var updatedTime = _timeManager.IncreaseTimeValue(hour);
             //TODO: inject campaign service, product service. get products in campaign and set prices by campaign discount
+            var time = updatedTime % 24;
+            return time.ToString("D2") + ":00";
         }
     }
 }

@@ -2,6 +2,6 @@
 {
     public interface ITimeService
     {
-        void IncreaseTime(int hour);
+        string IncreaseTime(int hour);
     }
 }

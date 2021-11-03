@@ -24,11 +24,13 @@ namespace Service.Managers
             throw new Exception("Time value is not valid.");
         }
 
-        public void IncreaseTimeValue(int hour)
+        public int IncreaseTimeValue(int hour)
         {
             if (hour <= 0)
                 throw new Exception("Hour increment value is not valid.");
-            Update(Constraints.TIME_SYSTEM_CONFIG_KEY, (GetTimeValue() + hour).ToString());
+            var updatedHour = GetTimeValue() + hour;
+            Update(Constraints.TIME_SYSTEM_CONFIG_KEY, updatedHour.ToString());
+            return updatedHour;
         }
 
         private string GetValue(string code)
