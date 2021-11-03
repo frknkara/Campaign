@@ -9,5 +9,6 @@ namespace Model.Product
         public int Stock { get; set; }
         public int Price { get; set; }
         public int CreationTime { get; set; }
+        public int InitialPrice { get; set; }
     }
 }

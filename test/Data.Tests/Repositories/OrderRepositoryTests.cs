@@ -33,6 +33,7 @@ namespace Data.Tests.Repositories
                 var productRepository = repositoryFactory.GetRepository<Product>();
                 productRepository.Create(product, false);
                 order.ProductId = product.Id;
+                order.UnitPrice = product.Price;
 
                 repositoryFactory = new GenericRepositoryFactory(context);
                 var repository = repositoryFactory.GetRepository<Order>();
@@ -42,6 +43,7 @@ namespace Data.Tests.Repositories
                 Assert.NotNull(result);
                 Assert.Equal(order.Quantity, result.Quantity);
                 Assert.Equal(product.Id, result.ProductId);
+                Assert.Equal(product.Price, result.UnitPrice);
                 Assert.NotNull(result.Product);
             }
         }
@@ -77,6 +79,8 @@ namespace Data.Tests.Repositories
                 productRepository.Create(product, false);
                 order1.ProductId = product.Id;
                 order2.ProductId = product.Id;
+                order1.UnitPrice = product.Price;
+                order2.UnitPrice = product.Price;
 
                 repositoryFactory = new GenericRepositoryFactory(context);
                 var repository = repositoryFactory.GetRepository<Order>();
@@ -115,6 +119,7 @@ namespace Data.Tests.Repositories
                 var productRepository = repositoryFactory.GetRepository<Product>();
                 productRepository.Create(product, false);
                 order.ProductId = product.Id;
+                order.UnitPrice = product.Price;
 
                 repositoryFactory = new GenericRepositoryFactory(context);
                 var repository = repositoryFactory.GetRepository<Order>();
@@ -123,6 +128,7 @@ namespace Data.Tests.Repositories
                 var result = repository.Get(order.Id);
                 Assert.NotNull(result);
                 Assert.Equal(product.Id, result.ProductId);
+                Assert.Equal(product.Price, result.UnitPrice);
                 Assert.Equal(order.Quantity, result.Quantity);
             }
         }
@@ -152,6 +158,7 @@ namespace Data.Tests.Repositories
                 var productRepository = repositoryFactory.GetRepository<Product>();
                 productRepository.Create(product, false);
                 order.ProductId = product.Id;
+                order.UnitPrice = product.Price;
 
                 repositoryFactory = new GenericRepositoryFactory(context);
                 var repository = repositoryFactory.GetRepository<Order>();
@@ -160,6 +167,7 @@ namespace Data.Tests.Repositories
                 var result = repository.GetByCondition(x => x.ProductId == product.Id).First();
                 Assert.NotNull(result);
                 Assert.Equal(product.Id, result.ProductId);
+                Assert.Equal(product.Price, result.UnitPrice);
                 Assert.Equal(order.Quantity, result.Quantity);
             }
         }
@@ -189,6 +197,7 @@ namespace Data.Tests.Repositories
                 var productRepository = repositoryFactory.GetRepository<Product>();
                 productRepository.Create(product, false);
                 order.ProductId = product.Id;
+                order.UnitPrice = product.Price;
 
                 repositoryFactory = new GenericRepositoryFactory(context);
                 var repository = repositoryFactory.GetRepository<Order>();
@@ -200,6 +209,7 @@ namespace Data.Tests.Repositories
                 var result = repository.Get(order.Id);
                 Assert.NotNull(result);
                 Assert.Equal(product.Id, result.ProductId);
+                Assert.Equal(product.Price, result.UnitPrice);
                 Assert.Equal(order.Quantity, result.Quantity);
             }
         }

@@ -9,5 +9,6 @@ namespace Model.Order
         public string ProductCode { get; set; }
         public int Quantity { get; set; }
         public int CreationTime { get; set; }
+        public int UnitPrice { get; set; }
     }
 }

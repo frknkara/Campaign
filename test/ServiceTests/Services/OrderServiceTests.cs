@@ -30,7 +30,8 @@ namespace ServiceTests
                 Code = "product",
                 Price = 100,
                 Stock = 50,
-                CreationTime = 0
+                CreationTime = 0,
+                InitialPrice = 100
             };
             _mockProductManager.Setup(x => x.GetProductInfo(It.IsAny<string>())).Returns(sampleProduct);
         }

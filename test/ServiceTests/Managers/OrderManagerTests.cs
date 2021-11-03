@@ -55,7 +55,8 @@ namespace ServiceTests
             {
                 ProductId = Guid.NewGuid(),
                 ProductCode = "product",
-                Quantity = 1
+                Quantity = 1,
+                UnitPrice = 50
             };
             var _mockRepository = new Mock<IRepository<Order>>();
             _mockRepositoryFactory.Setup(x => x.GetRepository<Order>()).Returns(_mockRepository.Object);
@@ -67,6 +68,7 @@ namespace ServiceTests
                 It.IsAny<bool>()));
             Assert.Equal(createOrder.ProductId, orderResult.ProductId);
             Assert.Equal(createOrder.Quantity, orderResult.Quantity);
+            Assert.Equal(createOrder.UnitPrice, orderResult.UnitPrice);
         }
     }
 }

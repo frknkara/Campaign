@@ -11,6 +11,7 @@ namespace Data.Entities
         public string Code { get; set; }
         public int Price { get; set; }
         public int Stock { get; set; }
+        public int InitialPrice { get; set; }
 
         public ICollection<Campaign> Campaigns { get; set; }
         public ICollection<Order> Orders { get; set; }

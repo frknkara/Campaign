@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace Data.Entities
 {
@@ -7,6 +6,7 @@ namespace Data.Entities
     {
         public Guid ProductId { get; set; }
         public int Quantity { get; set; }
+        public int UnitPrice { get; set; }
 
         public Product Product { get; set; }
 

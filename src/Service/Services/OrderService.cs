@@ -28,6 +28,7 @@ namespace Service.Services
                 ProductId = product.Id,
                 ProductCode = productCode,
                 Quantity = quantity,
+                UnitPrice = product.Price,
                 CreationTime = _timeManager.GetTimeValue()
             };
             var result = _orderManager.CreateOrder(order);

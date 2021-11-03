@@ -171,6 +171,7 @@ namespace ServiceTests
                 It.IsAny<Product>(),
                 It.IsAny<bool>()));
             Assert.Equal(createProduct.Code, productResult.Code);
+            Assert.Equal(createProduct.Price, productResult.InitialPrice);
         }
 
         [Fact]
@@ -218,7 +219,8 @@ namespace ServiceTests
             {
                 Code = "product",
                 Stock = 100,
-                Price = 50
+                Price = 50,
+                InitialPrice = 60
             };
             var list = new List<Product> { sampleProduct };
             _mockRepository.Setup(x => x.GetByCondition(It.IsAny<Expression<Func<Product, bool>>>())).Returns(list.AsQueryable());
@@ -228,6 +230,7 @@ namespace ServiceTests
             Assert.Equal(sampleProduct.Code, product.Code);
             Assert.Equal(sampleProduct.Stock, product.Stock);
             Assert.Equal(sampleProduct.Price, product.Price);
+            Assert.Equal(sampleProduct.InitialPrice, product.InitialPrice);
         }
 
         [Fact]

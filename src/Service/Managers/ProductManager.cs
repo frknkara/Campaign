@@ -38,6 +38,7 @@ namespace Service.Managers
                 throw new Exception($"The product with {product.Code} code has already been created.");
 
             var entity = _mapper.Map<Product>(product);
+            entity.InitialPrice = product.Price;
 
             _repository.Create(entity);
             return _mapper.Map<ProductDto>(entity);

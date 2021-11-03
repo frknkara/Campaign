@@ -20,7 +20,8 @@ namespace Data.Tests.Repositories
             {
                 Code = "product_create",
                 Price = 10,
-                Stock = 100
+                Stock = 100,
+                InitialPrice = 10
             };
 
             using (var context = new CampaignDbContext(options))
@@ -36,6 +37,7 @@ namespace Data.Tests.Repositories
                 Assert.Equal(product.Code, result.Code);
                 Assert.Equal(product.Price, result.Price);
                 Assert.Equal(product.Stock, result.Stock);
+                Assert.Equal(product.InitialPrice, result.InitialPrice);
                 Assert.Equal(product.RealCreationTime, result.RealCreationTime);
             }
         }
@@ -82,14 +84,16 @@ namespace Data.Tests.Repositories
             {
                 Code = "product_getlist_1",
                 Price = 10,
-                Stock = 100
+                Stock = 100,
+                InitialPrice = 10
             };
 
             var product2 = new Product
             {
                 Code = "product_getlist_2",
                 Price = 20,
-                Stock = 50
+                Stock = 500,
+                InitialPrice = 30
             };
 
             using (var context = new CampaignDbContext(options))
@@ -106,9 +110,11 @@ namespace Data.Tests.Repositories
                 Assert.Equal(product1.Code, result[0].Code);
                 Assert.Equal(product1.Price, result[0].Price);
                 Assert.Equal(product1.Stock, result[0].Stock);
+                Assert.Equal(product1.InitialPrice, result[0].InitialPrice);
                 Assert.Equal(product2.Code, result[1].Code);
                 Assert.Equal(product2.Price, result[1].Price);
                 Assert.Equal(product2.Stock, result[1].Stock);
+                Assert.Equal(product2.InitialPrice, result[1].InitialPrice);
             }
         }
 
@@ -123,7 +129,8 @@ namespace Data.Tests.Repositories
             {
                 Code = "product_get",
                 Price = 10,
-                Stock = 100
+                Stock = 100,
+                InitialPrice = 5
             };
 
             using (var context = new CampaignDbContext(options))
@@ -137,6 +144,7 @@ namespace Data.Tests.Repositories
                 Assert.Equal(product.Code, result.Code);
                 Assert.Equal(product.Price, result.Price);
                 Assert.Equal(product.Stock, result.Stock);
+                Assert.Equal(product.InitialPrice, result.InitialPrice);
             }
         }
 
@@ -151,7 +159,8 @@ namespace Data.Tests.Repositories
             {
                 Code = "product_getbycondition",
                 Price = 10,
-                Stock = 100
+                Stock = 100,
+                InitialPrice = 5
             };
 
             using (var context = new CampaignDbContext(options))
@@ -165,6 +174,7 @@ namespace Data.Tests.Repositories
                 Assert.Equal(product.Code, result.Code);
                 Assert.Equal(product.Price, result.Price);
                 Assert.Equal(product.Stock, result.Stock);
+                Assert.Equal(product.InitialPrice, result.InitialPrice);
             }
         }
 
@@ -179,7 +189,8 @@ namespace Data.Tests.Repositories
             {
                 Code = "product_update",
                 Price = 10,
-                Stock = 100
+                Stock = 100,
+                InitialPrice = 5
             };
 
             using (var context = new CampaignDbContext(options))
@@ -196,6 +207,7 @@ namespace Data.Tests.Repositories
                 Assert.Equal(product.Code, result.Code);
                 Assert.Equal(product.Price, result.Price);
                 Assert.Equal(product.Stock, result.Stock);
+                Assert.Equal(product.InitialPrice, result.InitialPrice);
             }
         }
 
