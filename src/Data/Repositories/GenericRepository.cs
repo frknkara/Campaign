@@ -31,6 +31,7 @@ namespace Data.Repositories
 
         public TEntity Create(TEntity entity, bool saveChanges = true)
         {
+            entity.RealCreationTime = DateTime.Now;
             _context.Set<TEntity>().Add(entity);
             if (saveChanges)
                 _context.SaveChanges();

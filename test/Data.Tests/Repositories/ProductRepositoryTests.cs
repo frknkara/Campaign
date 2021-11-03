@@ -28,6 +28,7 @@ namespace Data.Tests.Repositories
                 var repositoryFactory = new GenericRepositoryFactory(context);
                 var repository = repositoryFactory.GetRepository<Product>();
                 repository.Create(product);
+                Assert.Equal(DateTime.Today, product.RealCreationTime.Date);
 
                 var result = context.Products.AsNoTracking().First(x => x.Code == product.Code);
                 Assert.NotNull(result);
@@ -35,6 +36,7 @@ namespace Data.Tests.Repositories
                 Assert.Equal(product.Code, result.Code);
                 Assert.Equal(product.Price, result.Price);
                 Assert.Equal(product.Stock, result.Stock);
+                Assert.Equal(product.RealCreationTime, result.RealCreationTime);
             }
         }
 

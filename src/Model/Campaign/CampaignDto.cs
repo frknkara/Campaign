@@ -12,5 +12,6 @@ namespace Model.Campaign
         public int PriceManipulationLimit { get; set; }
         public int TargetSalesCount { get; set; }
         public int CreationTime { get; set; }
+        public DateTime RealCreationTime { get; set; }
     }
 }
