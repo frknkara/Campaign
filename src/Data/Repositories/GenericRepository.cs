@@ -42,7 +42,11 @@ namespace Data.Repositories
         {
             _context.Set<TEntity>().Update(entity);
             if (saveChanges)
+            {
                 _context.SaveChanges();
+                //tracking issue resolved with detaching entity
+                _context.Entry(entity).State = EntityState.Detached;
+            }
         }
 
         public void Delete(TEntity entity, bool saveChanges = true)
