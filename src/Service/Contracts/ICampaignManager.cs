@@ -9,5 +9,6 @@ namespace Service.Contracts
         CampaignDto CreateCampaign(CreateCampaignDto campaign);
         CampaignDto GetCampaignInfo(string campaignName);
         List<OrderDto> GetCampaignOrders(CampaignDto campaign);
+        List<CampaignDto> GetActiveCampaigns(int time);
     }
 }

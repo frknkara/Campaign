@@ -349,5 +349,39 @@ namespace ServiceTests
             Assert.True(result.All(x => x.ProductId == sampleCampaign.ProductId));
             Assert.Equal(new List<int> { 3, 4, 5 }, result.Select(x => x.Quantity).ToList());
         }
+
+        [Fact]
+        public void Test_GetActiveCampaigns()
+        {
+            var _mockRepository = new Mock<IRepository<Campaign>>();
+            var productId = Guid.NewGuid();
+            var product = new Product
+            {
+                Id = productId,
+                Code = "product",
+                InitialPrice = 50,
+                Price = 40,
+                Stock = 100,
+                CreationTime = 5
+            };
+            var sampleCampaign = new Campaign
+            {
+                Name = "campaign",
+                ProductId = productId,
+                Duration = 10,
+                PriceManipulationLimit = 20,
+                TargetSalesCount = 100,
+                Product = product,
+                CreationTime = 1
+            };
+            var list = new List<Campaign> { sampleCampaign };
+            _mockRepository.Setup(x => x.GetByCondition(It.IsAny<Expression<Func<Campaign, bool>>>())).Returns(list.AsQueryable());
+            _mockRepositoryFactory.Setup(x => x.GetRepository<Campaign>()).Returns(_mockRepository.Object);
+            var manager = new CampaignManager(_mockRepositoryFactory.Object, _mapper);
+            var result = manager.GetActiveCampaigns(7);
+            _mockRepository.Verify(x => x.GetByCondition(y => y.CreationTime <= 7 && y.CreationTime + y.Duration >= 7));
+
+            Assert.Single(result);
+        }
     }
 }

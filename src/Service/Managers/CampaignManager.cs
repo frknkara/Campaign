@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Data.Entities;
 using Data.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Model.Campaign;
 using Model.Order;
 using Model.Shared;
@@ -68,6 +69,14 @@ namespace Service.Managers
                 && x.CreationTime <= campaignEndTime
                 && x.RealCreationTime >= campaign.RealCreationTime).ToList();
             return _mapper.Map<List<OrderDto>>(result);
+        }
+
+        public List<CampaignDto> GetActiveCampaigns(int time)
+        {
+            var list = _repository.GetByCondition(x => x.CreationTime <= time && x.CreationTime + x.Duration >= time)
+                .Include(x => x.Product)
+                .ToList();
+            return _mapper.Map<List<CampaignDto>>(list);
         }
     }
 }
