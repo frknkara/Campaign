@@ -111,7 +111,7 @@ namespace ServiceTests
             //old campaigns set prices to initial prices
             _mockProductManager.Verify(x => x.UpdateProductPrice(_product2, 200));
 
-            Assert.Equal("02:00", result);
+            Assert.Equal("Time is 02:00", result);
         }
 
         [Fact]
@@ -126,7 +126,7 @@ namespace ServiceTests
             var service = new TimeService(_mockTimeManager.Object, _mockCampaignManager.Object, _mockProductManager.Object);
             var result = service.IncreaseTime(1);
             _mockTimeManager.Verify(x => x.IncreaseTimeValue(1));
-            Assert.Equal("01:00", result);
+            Assert.Equal("Time is 01:00", result);
         }
 
         [Fact]
@@ -141,7 +141,7 @@ namespace ServiceTests
             var service = new TimeService(_mockTimeManager.Object, _mockCampaignManager.Object, _mockProductManager.Object);
             var result = service.IncreaseTime(13);
             _mockTimeManager.Verify(x => x.IncreaseTimeValue(13));
-            Assert.Equal("14:00", result);
+            Assert.Equal("Time is 14:00", result);
         }
 
         [Fact]
@@ -156,7 +156,7 @@ namespace ServiceTests
             var service = new TimeService(_mockTimeManager.Object, _mockCampaignManager.Object, _mockProductManager.Object);
             var result = service.IncreaseTime(25);
             _mockTimeManager.Verify(x => x.IncreaseTimeValue(25));
-            Assert.Equal("01:00", result);
+            Assert.Equal("Time is 01:00", result);
         }
     }
 }

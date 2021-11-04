@@ -35,7 +35,8 @@ namespace Service.Services
             var closedCampaigns = GetClosedCampaigns(oldActiveCampaigns, currentActiveCampaigns);
             SetPricesToInitials(closedCampaigns);
             var time = updatedTime % 24;
-            return time.ToString("D2") + ":00";
+            var timeStr = time.ToString("D2") + ":00";
+            return $"Time is {timeStr}";
         }
 
         private void SetNewPrices(int incrementHour, List<CampaignDto> campaigns)
