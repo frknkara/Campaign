@@ -13,7 +13,7 @@ using System;
 using Service.Services;
 using Microsoft.Extensions.Logging;
 
-namespace Campaign
+namespace ConsoleApp
 {
     public class Program
     {
@@ -73,8 +73,6 @@ namespace Campaign
 
         public void Run(CampaignDbContext dbContext)
         {
-            DataSeeding.Seed(dbContext);
-
             while (true)
             {
                 Console.WriteLine("Enter command:");
@@ -97,8 +95,6 @@ namespace Campaign
                         }
                     }
                     while (response.Key != ConsoleKey.N);
-                    
-                    
                     continue;
                 }
                 try
