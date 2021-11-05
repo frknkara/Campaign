@@ -26,7 +26,9 @@ namespace Campaign
                 .AddEnvironmentVariables()
                 .Build();
 
-            var connStr = config.GetConnectionString("CampaignDbConnection");
+            var connStr = Environment.GetEnvironmentVariable("CAMPAIGN_DB_CONNECTION");
+            if (string.IsNullOrEmpty(connStr))
+                connStr = config.GetConnectionString("CampaignDbConnection");
 
             var mapperConfiguration = new MapperConfiguration(conf => conf.AddProfile(new MappingProfiles()));
             var mapper = mapperConfiguration.CreateMapper();
