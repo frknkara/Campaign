@@ -1,8 +1,8 @@
 version: "3.7"
 
 services:
-  app:
-    image: ${DOCKER_REGISTRY-}app
+  api:
+    image: ${DOCKER_REGISTRY-}api
     build:
       context: .
       dockerfile: Dockerfile
@@ -10,6 +10,10 @@ services:
       CAMPAIGN_DB_CONNECTION: "Server=db;Port=5432;Database=campaigndb;User ID=postgres;Password=hb123;"
     depends_on:
       - db
+    ports:
+      - "9000:80"
+    expose:
+      - "9000"
     networks:
       - campaign-network
   db:
