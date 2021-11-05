@@ -1,6 +1,17 @@
 version: "3.7"
 
 services:
+  app:
+    image: ${DOCKER_REGISTRY-}app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      CAMPAIGN_DB_CONNECTION: "Server=db;Port=5432;Database=campaigndb;User ID=postgres;Password=hb123;"
+    depends_on:
+      - db
+    networks:
+      - campaign-network
   db:
     image: postgres:latest
     ports:
@@ -14,5 +25,11 @@ services:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "hb123"
       POSTGRES_DB: "campaigndb"
+    networks:
+      - campaign-network
 volumes:
   db_volume:
+
+networks:
+  campaign-network:
+    driver: bridge
